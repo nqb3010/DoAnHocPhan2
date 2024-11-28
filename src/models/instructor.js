@@ -50,6 +50,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
+            status: {
+                type: DataTypes.ENUM('approved','rejected','completed'),
+                allowNull: false,
+            },
         },
         {
             sequelize,

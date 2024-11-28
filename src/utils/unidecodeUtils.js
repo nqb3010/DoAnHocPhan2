@@ -8,6 +8,16 @@ const cleanString = (str) => {
     return str.toLowerCase();
   };
 
+const tachHoTen = (str) => {
+    // Tách họ và tên
+    const parts = str.split(" ");
+    if(parts.length < 2) return { first_name: str, last_name: "" };
+    const last_name = parts.pop();
+    const first_name = parts.join(" ");
+    return { first_name, last_name };
+  }
+
 module.exports = {
     cleanString,
+    tachHoTen
     };

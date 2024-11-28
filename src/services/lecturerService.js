@@ -1,7 +1,7 @@
 const { raw } = require("body-parser");
 const db = require("../models/index");
 require("dotenv").config();
-const { cleanString } = require("../utils/unidecodeUtils");
+const { cleanString, tachHoTen } = require("../utils/unidecodeUtils");
 const bcript = require("bcrypt");
 
 const getLecturers = async () => {
@@ -28,7 +28,7 @@ const getLecturerById = async (id) => {
             {
                 model: db.User,
                 as: "user",
-                attributes: ["username", "email", "role", "is_active"],
+                attributes: ["email", "role", "is_active"],
             },
             {
                 model: db.Faculty,
@@ -53,9 +53,10 @@ const addLecturer = async (lecturer) => {
             const mailDomain = process.env.MAIL_DOMAIN;
             const passwordDefault = process.env.PASSWORD_DEFAULT;
             const hashPassword = bcript.hashSync(passwordDefault, 10);
+            const hoten = tachHoTen(lecturer.full_name);
             const checkLecturer = await db.Lecturer.findOne({
                 where: {
-                    email:`${cleanString(lecturer.last_name)}${cleanString(lecturer.first_name)}${mailDomain}`,
+                    email:`${cleanString(lecturer.full_name)}${mailDomain}`,
                 },
             });
             if (checkLecturer) {
@@ -65,15 +66,14 @@ const addLecturer = async (lecturer) => {
                 });
             }
             const newUser = await db.User.create({
-                username: `${cleanString(lecturer.last_name)}${cleanString(lecturer.first_name)}`,
+                email: `${cleanString(lecturer.full_name)}${mailDomain}`,
                 password: hashPassword,
-                email: `${cleanString(lecturer.last_name)}${cleanString(lecturer.first_name)}${mailDomain}`,
                 role: "lecturer",
                 is_active: 1,
             });
             const newLecturer = await db.Lecturer.create({
-                first_name: lecturer.first_name,
-                last_name: lecturer.last_name,
+                first_name: hoten.first_name,
+                last_name: hoten.last_name,
                 phone: lecturer.phone,
                 email: newUser.email,
                 user_id: newUser.id,
@@ -213,6 +213,16 @@ const deleteLecturer = async (id) => {
 const getstudentsbyLecturerId = async (lecturerId) => {
     return new Promise(async(resolve, reject) => {
         try {
+            const checkLecturer = await db.Lecturer.findOne({
+                where: { id: lecturerId },
+            });
+            if (!checkLecturer) {
+                resolve({
+                    status: 400,
+                    message: "Không tìm thấy giảng viên",
+                });
+                return;
+            }
             const students = await db.Instructor.findAll({
                 where: { lecturer_id: lecturerId }, // Lọc theo giảng viên
                 include: [

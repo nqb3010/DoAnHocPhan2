@@ -40,7 +40,8 @@ const assignLecturer = async (facultyId, courseId, companyId) => {
                     student_id: student.id,
                     lecturer_id: lecturerIds[index],
                     intern_id: 1,
-                    company_id: companyId, 
+                    company_id: companyId,
+                    status: "approved" 
                 });
                 index = (index + 1) % lecturerIds.length;
             }

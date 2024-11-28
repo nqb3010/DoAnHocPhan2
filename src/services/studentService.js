@@ -2,7 +2,7 @@
 const db = require("../models/index");
 require("dotenv").config();
 const bcript = require("bcrypt");
-const { cleanString } = require("../utils/unidecodeUtils");
+const { cleanString, tachHoTen } = require("../utils/unidecodeUtils");
 const faculty = require("../models/faculty");
 const { raw } = require("body-parser");
 
@@ -70,10 +70,12 @@ const addStudent = async (resust) => {
           message: "Sinh viên đã tồn tại",
         });
       } else {
+        const hoten = tachHoTen(resust.full_name);
+        console.log(hoten);
         const newStudent = await db.Student.create({
           student_code: resust.student_code,
-          first_name: resust.first_name,
-          last_name: resust.last_name,
+          first_name: hoten.first_name,
+          last_name: hoten.last_name,
           class_id: resust.class_id,
           status: 0,
         });
