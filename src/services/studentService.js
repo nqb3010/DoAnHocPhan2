@@ -12,6 +12,22 @@ const getStudents = async () => {
     try {
       const students = await db.Student.findAll({
         attributes: ["student_code", "first_name", "last_name"],
+        include: [
+          {  
+            model: db.Class,
+            attributes: ["name"],
+            as: "Class",
+            include: [
+              {
+                model: db.Faculty,
+                attributes: ["name"],
+                as: "faculty",
+              },
+            ],
+          },
+        ],
+        raw: true,
+        nest: true,
       });
       resolve(students);
     } catch (error) {
@@ -210,7 +226,6 @@ const filterStudents = async (keyword) => {
             first_name: { [db.Sequelize.Op.like]: `%${hoten.first_name}%` } , 
             last_name: { [db.Sequelize.Op.like]: `%${hoten.last_name}%` } ,
           },
-          logging: console.log
         });
         if (students.length > 0) {
           resolve(students);

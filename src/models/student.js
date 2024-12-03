@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
       Student.belongsTo(models.Class, {
         foreignKey: "class_id",
         targetKey: "id",
-        as: "class",
+        as: "Class",
       });
       Student.hasMany(models.Instructor, {
         foreignKey: "student_id",
