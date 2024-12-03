@@ -8,14 +8,28 @@ const cleanString = (str) => {
     return str.toLowerCase();
   };
 
-const tachHoTen = (str) => {
+  const tachHoTen = (str) => {
+    if (!str || typeof str !== "string") {
+      return { first_name: "", last_name: "" };
+    }
+  
+    // Kiểm tra nếu là số
+    const isNumber = !isNaN(Number(str.trim())); // Loại bỏ khoảng trắng rồi kiểm tra
+    if (isNumber) {
+      return { first_name: "", last_name: "" };
+    }
+  
     // Tách họ và tên
-    const parts = str.split(" ");
-    if(parts.length < 2) return { first_name: str, last_name: "" };
-    const last_name = parts.pop();
-    const first_name = parts.join(" ");
+    const parts = str.trim().split(/\s+/); // Xóa khoảng trắng thừa và tách các từ
+    if (parts.length < 2) {
+      return { first_name: "", last_name: str }; // Nếu chỉ có một từ
+    }
+  
+    const last_name = parts.pop(); // Lấy từ cuối làm tên
+    const first_name = parts.join(" "); // Phần còn lại làm họ
+  
     return { first_name, last_name };
-  }
+  };
 
 module.exports = {
     cleanString,

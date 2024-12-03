@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
         autoIncrement: true,
       },
       student_code: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       first_name: {

@@ -6,6 +6,7 @@ const studentController = require("../controllers/studentController");
 const companyController = require("../controllers/companyController");
 const lecturerController = require("../controllers/lecturerController");
 const adminController = require("../controllers/adminController");
+const dashboardController = require("../controllers/dashboardController");
 const initRoutes = (app) => {
     app.get("/", (req, res) => {
         res.send("Hello World!");
@@ -13,6 +14,8 @@ const initRoutes = (app) => {
     app.get("/api", (req, res) => {
         res.send("API is working");
     });
+    //dashboard routes
+    app.get("/api/dashboard",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin,dashboardController.handleGetDashboard);
     //user routes
     app.post("/api/auth/login",userController.handleLogin);
 
@@ -28,6 +31,7 @@ const initRoutes = (app) => {
     app.post("/api/students",middlewareController.verifyToken,middlewareController.verifyAdmin, studentController.handleAddStudent);
     app.put("/api/student/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, studentController.handleUpdateStudent);
     app.delete("/api/student/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, studentController.handleDeleteStudent);
+    app.get("/api/filterStudents",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, studentController.handleFilterStudents);
     //company routes
     app.get("/api/companies",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, companyController.handleGetCompanies);
     app.get("/api/company/:id",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, companyController.handleGetCompanyById);

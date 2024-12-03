@@ -45,10 +45,21 @@ const handleDeleteStudent = async (req, res) => {
     }
 };
 
+const handleFilterStudents = async (req, res) => {
+    try {
+        const keyword = req.query.keyword;
+        const students = await studentService.filterStudents(keyword);
+        res.json(students);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     handleGetStudents,
     handleGetStudentById,
     handleAddStudent,
     handleUpdateStudent,
     handleDeleteStudent,
+    handleFilterStudents
 };

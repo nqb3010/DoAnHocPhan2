@@ -5,6 +5,7 @@ const bcript = require("bcrypt");
 const { cleanString, tachHoTen } = require("../utils/unidecodeUtils");
 const faculty = require("../models/faculty");
 const { raw } = require("body-parser");
+const { where } = require("sequelize");
 
 const getStudents = async () => {
   return new Promise(async (resolve, reject) => {
@@ -183,10 +184,53 @@ const deleteStudent = async (id) => {
   });
 };
 
+const filterStudents = async (keyword) => {
+  return new Promise(async(resolve, reject) => {
+    try {
+      const studentCode = parseInt(keyword);
+      if(!isNaN(studentCode)) {
+        const students = await db.Student.findAll({
+          where: {
+            student_code: studentCode,
+          },
+          logging: console.log
+        });
+        if (students.length > 0) {
+          resolve(students);
+        }
+        resolve({
+          status: 400,
+          message: "Không tìm thấy sinh viên",
+        });
+      }
+      else {
+        const hoten = tachHoTen(keyword);
+        const students = await db.Student.findAll({
+          where: {
+            first_name: { [db.Sequelize.Op.like]: `%${hoten.first_name}%` } , 
+            last_name: { [db.Sequelize.Op.like]: `%${hoten.last_name}%` } ,
+          },
+          logging: console.log
+        });
+        if (students.length > 0) {
+          resolve(students);
+        }
+        resolve({
+          status: 400,
+          message: "Không tìm thấy sinh viên",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  })
+};
+
 module.exports = {
   getStudents,
   getStudentById,
   addStudent,
   updateStudent,
   deleteStudent,
+  filterStudents,
 };

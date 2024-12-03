@@ -24,6 +24,11 @@ module.exports = (sequelize) => {
                 targetKey: "id",
                 as: "company",
             });
+            Instructor.hasMany(models.Evaluation, {
+                foreignKey: "instructor_id",
+                sourceKey: "id",
+                as: "evaluations",
+            });
         }
     }
 

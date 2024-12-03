@@ -56,11 +56,21 @@ const handleGetStudentsByLecturer = async (req, res) => {
     }
 };
 
+const handleFilterLecturers = async (req, res) => {
+    try {
+        const lecturers = await lecturerService.filterLecturers(req.query);
+        res.json(lecturers);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     handleGetLecturers,
     handleGetLecturerById,
     handleAddLecturer,
     handleUpdateLecturer,
     handleDeleteLecturer,
-    handleGetStudentsByLecturer
+    handleGetStudentsByLecturer,
+    handleFilterLecturers
 };

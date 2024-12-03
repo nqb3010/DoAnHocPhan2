@@ -36,6 +36,7 @@ const login = async (email, password) => {
            delete user.password;
            delete user.created_at;
            delete user.is_active;
+           console.log(user.email + ' ' + "login success");
            resolve({
                 status: 200,
                 message: 'Đăng nhập thành công',
