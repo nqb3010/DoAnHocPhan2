@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
             Course.hasMany(models.Class, {
                 foreignKey: 'course_id',
                 sourceKey: 'id',
-                as: 'classes'
+                as: 'classes',
             });
         }
     }
