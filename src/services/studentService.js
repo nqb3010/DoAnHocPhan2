@@ -6,6 +6,7 @@ const { cleanString, tachHoTen } = require("../utils/unidecodeUtils");
 const faculty = require("../models/faculty");
 const { raw } = require("body-parser");
 const { where } = require("sequelize");
+const { stat } = require("fs");
 
 const getStudents = async () => {
   return new Promise(async (resolve, reject) => {
@@ -169,7 +170,7 @@ const deleteStudent = async (id) => {
           student_code: id,
         },
       });
-      if (checkStudent) {
+      if (checkStudent.status === 0) {
         const deleteStudent = await db.Student.destroy({
           where: {
             student_code: id,
@@ -188,7 +189,34 @@ const deleteStudent = async (id) => {
             data: deleteStudent
           });
         }
-      } else {
+      } else if (checkStudent.status === 1) {
+        deleteInstructor = await db.Instructor.destroy({
+          where: {
+            student_id: checkStudent.id,
+          },
+        });
+        if(deleteInstructor) {
+          const deleteStudent = await db.Student.destroy({
+            where: {
+              student_code: id,
+            },
+          });
+          if (deleteStudent) {
+            resolve({
+              status: 200,
+              message: "Xóa sinh viên thành công",
+              data: deleteStudent
+            });
+          } else {
+            resolve({
+              status: 400,
+              message: "Xóa sinh viên thất bại",
+              data: deleteStudent
+            });
+          }
+        }
+      } 
+      else {
         resolve({
           status: 400,
           message: "Sinh viên không tồn tại",

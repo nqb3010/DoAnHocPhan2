@@ -43,6 +43,13 @@ const assignLecturer = async (facultyId, courseId, companyId) => {
                     company_id: companyId,
                     status: "approved" 
                 });
+                await db.Student.update({
+                    status: 1
+                }, {
+                    where: {
+                        id: student.id
+                    }
+                });
                 index = (index + 1) % lecturerIds.length;
             }
             resolve({
