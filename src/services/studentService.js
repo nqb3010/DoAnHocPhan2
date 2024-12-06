@@ -126,6 +126,12 @@ const updateStudent = async (id, student) => {
         },
       });
       if (checkStudent) {
+        if(!student.full_name || !student.class_id) {
+          resolve({
+            status: 400,
+            message: "Vui lòng nhập đầy đủ thông tin",
+          });
+        }
         const hoten = tachHoTen(student.full_name);
         const updateStudent = await db.Student.update(
           {
