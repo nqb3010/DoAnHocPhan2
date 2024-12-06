@@ -4,12 +4,11 @@ const db = require('../models/index');
 const getInterns = async () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const interns = await db.internshipPeriod.findAll(
+            const interns = await db.Intern.findAll(
                 {
                     where: {
                         is_active: 1
                     },
-                    attributes: ['period_id', 'name'],
                 }
             );
             resolve(interns);
