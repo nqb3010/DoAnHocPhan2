@@ -126,11 +126,12 @@ const updateStudent = async (id, student) => {
         },
       });
       if (checkStudent) {
+        const hoten = tachHoTen(student.full_name);
         const updateStudent = await db.Student.update(
           {
             student_code: student.student_code,
-            first_name: student.first_name,
-            last_name: student.last_name,
+            first_name: hoten.first_name,
+            last_name: hoten.last_name,
             class_id: student.class_id,
           },
           {
@@ -165,64 +166,50 @@ const updateStudent = async (id, student) => {
 const deleteStudent = async (id) => {
   return new Promise(async (resolve, reject) => {
     try {
+      // Tìm sinh viên
       const checkStudent = await db.Student.findOne({
-        where: {
-          student_code: id,
-        },
+        where: { student_code: id },
       });
-      if (checkStudent.status === 0) {
-        const deleteStudent = await db.Student.destroy({
-          where: {
-            student_code: id,
-          },
-        });
-        if (deleteStudent) {
-          resolve({
-            status: 200,
-            message: "Xóa sinh viên thành công",
-            data: deleteStudent
-          });
-        } else {
-          resolve({
-            status: 400,
-            message: "Xóa sinh viên thất bại",
-            data: deleteStudent
-          });
-        }
-      } else if (checkStudent.status === 1) {
-        deleteInstructor = await db.Instructor.destroy({
-          where: {
-            student_id: checkStudent.id,
-          },
-        });
-        if(deleteInstructor) {
-          const deleteStudent = await db.Student.destroy({
-            where: {
-              student_code: id,
-            },
-          });
-          if (deleteStudent) {
-            resolve({
-              status: 200,
-              message: "Xóa sinh viên thành công",
-              data: deleteStudent
-            });
-          } else {
-            resolve({
-              status: 400,
-              message: "Xóa sinh viên thất bại",
-              data: deleteStudent
-            });
-          }
-        }
-      } 
-      else {
+  
+      if (!checkStudent) {
         resolve({
           status: 400,
           message: "Sinh viên không tồn tại",
         });
       }
+  
+      if (checkStudent.status === 1) {
+        // Nếu sinh viên có liên kết với giảng viên
+        const deleteInstructor = await db.Instructor.destroy({
+          where: { student_id: checkStudent.id },
+        });
+  
+        if (!deleteInstructor) {
+          resolve({
+            status: 400,
+            message: "Xóa giảng viên liên kết thất bại",
+          });
+        }
+      }
+  
+      // Xóa sinh viên
+      const deleteStudent = await db.Student.destroy({
+        where: { student_code: id },
+      });
+  
+      if (deleteStudent) {
+        resolve({
+          status: 200,
+          message: "Xóa sinh viên thành công",
+        });
+      } else {
+        resolve({
+          status: 400,
+          message: "Xóa sinh viên thất bại",
+        });
+      }
     } catch (error) {
+      // Bắt lỗi
       reject(error);
     }
   });
