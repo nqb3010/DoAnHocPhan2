@@ -5,7 +5,6 @@ const getCompanies = async () => {
     return new Promise(async (resolve, reject) => {
         try {
         const companies = await db.Company.findAll({
-            attributes: ["company_id", "name"],
         });
         resolve(companies);
         } catch (error) {
