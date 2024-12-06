@@ -18,7 +18,6 @@ const getAllClasses = async () => {
                 ], 
                 raw: true, 
                 nest: true, 
-                logging: console.log 
               });       
             resolve(classes);
         } catch (error) {
