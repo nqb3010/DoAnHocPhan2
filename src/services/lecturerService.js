@@ -8,7 +8,6 @@ const getLecturers = async () => {
   return new Promise(async (resolve, reject) => {
     try {
       const lecturers = await db.Lecturer.findAll({
-        attributes: ["id", "first_name", "last_name"],
       });
       resolve(lecturers);
     } catch (error) {
