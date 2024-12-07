@@ -8,7 +8,14 @@ const getLecturers = async () => {
   return new Promise(async (resolve, reject) => {
     try {
       const lecturers = await db.Lecturer.findAll({
+        include: [
+            {
+                model: db.Faculty,
+                as: "faculty",
+            },
+            ],
       });
+      delete lecturers.user_id;
       resolve(lecturers);
     } catch (error) {
       reject(error);
