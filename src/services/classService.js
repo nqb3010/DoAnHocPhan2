@@ -38,5 +38,6 @@ const getAllFaculties = async () => {
 };
 
 module.exports = {
-    getAllClasses
+    getAllClasses,
+    getAllFaculties,
 };
