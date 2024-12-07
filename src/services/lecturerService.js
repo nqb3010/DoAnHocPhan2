@@ -87,6 +87,7 @@ const addLecturer = async (lecturer) => {
                 user_id: newUser.id,
                 faculty_id: lecturer.faculty_id,
             });
+
             if (newLecturer && newUser !== null) {
             resolve({
                 status: 200,
@@ -192,7 +193,7 @@ const deleteLecturer = async (id) => {
 
         // Thực hiện xóa giảng viên
         const deletedLecturer = await db.Lecturer.destroy({
-            where: { lecturer_id: id },
+            where: { id: id },
         });
 
         if (deletedLecturer > 0) {
