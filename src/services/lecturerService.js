@@ -14,6 +14,8 @@ const getLecturers = async () => {
                 as: "faculty",
             },
             ],
+        raw: true,
+        nest: true,
       });
       delete lecturers.user_id;
       resolve(lecturers);
