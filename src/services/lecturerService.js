@@ -181,7 +181,7 @@ const deleteLecturer = async (id) => {
     try {
         // Kiểm tra giảng viên có tồn tại không
         const checkLecturer = await db.Lecturer.findOne({
-            where: { lecturer_id: id },
+            where: { id: id },
         });
 
         if (!checkLecturer) {
