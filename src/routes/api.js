@@ -51,6 +51,6 @@ const initRoutes = (app) => {
 
     // class routes
     app.get("/api/classes",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetAllClasses);
-    
+    app.get("/api/faculties",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetAllFaculties);    
 };
 module.exports = initRoutes;

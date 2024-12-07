@@ -26,6 +26,17 @@ const getAllClasses = async () => {
     })
 };
 
+const getAllFaculties = async () => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const faculties = await db.Faculty.findAll();
+            resolve(faculties);
+        } catch (error) {
+            reject(error);
+        }
+    })
+};
+
 module.exports = {
     getAllClasses
 };
