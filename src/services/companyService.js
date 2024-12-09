@@ -62,7 +62,7 @@ const updateCompany = async (id, company) => {
         try {
         const checkCompany = await db.Company.findOne({
             where: {
-            company_id: id,
+            id: id,
             },
         });
         if (checkCompany) {
@@ -77,7 +77,7 @@ const updateCompany = async (id, company) => {
             },
             {
                 where: {
-                    company_id: id,
+                    id: id,
                 },
             }
             );
@@ -109,13 +109,13 @@ const deleteCompany = async (id) => {
         try {
         const checkCompany = await db.Company.findOne({
             where: {
-            company_id: id,
+            id: id,
             },
         });
         if (checkCompany) {
             const deletedCompany = await db.Company.destroy({
             where: {
-                company_id: id,
+                id: id,
             },
             });
             if (deletedCompany) {
