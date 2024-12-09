@@ -117,7 +117,7 @@ const updateLecturer = async (id, lecturer) => {
         try {
             // Kiểm tra giảng viên có tồn tại hay không
             const checkLecturer = await db.Lecturer.findOne({
-                where: { lecturer_id: id },
+                where: { id: id },
             });
 
             if (!checkLecturer) {
@@ -130,10 +130,8 @@ const updateLecturer = async (id, lecturer) => {
 
             // Kiểm tra dữ liệu đầu vào
             if (
-                !lecturer.first_name ||
-                !lecturer.last_name ||
-                !lecturer.department ||
-                !lecturer.phone
+                !lecturer.full_name ||
+                !lecturer.phone 
             ) {
                 resolve({
                     status: 400,
@@ -142,16 +140,19 @@ const updateLecturer = async (id, lecturer) => {
                 return;
             }
 
+            // Tách họ và tên
+            const hoten = tachHoTen(lecturer.full_name);
+            mailDomain = process.env.MAIL_DOMAIN;
             // Cập nhật thông tin giảng viên
             const [updatedRows] = await db.Lecturer.update(
                 {
-                    first_name: lecturer.first_name,
-                    last_name: lecturer.last_name,
-                    department: lecturer.department,
+                    first_name: hoten.first_name,
+                    last_name: hoten.last_name,
+                    email : `${cleanString(lecturer.full_name)}${mailDomain}`,
                     phone: lecturer.phone,
                 },
                 {
-                    where: { lecturer_id: id },
+                    where: { id: id },
                 }
             );
 
