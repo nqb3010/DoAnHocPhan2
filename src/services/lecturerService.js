@@ -157,6 +157,15 @@ const updateLecturer = async (id, lecturer) => {
             );
 
             if (updatedRows > 0) {
+
+                const [updatedUser] = await db.User.update(
+                    {
+                        email: `${cleanString(lecturer.full_name)}${mailDomain}`,
+                    },
+                    {
+                        where: { id: checkLecturer.user_id },
+                    }
+                );
                 resolve({
                     status: 200,
                     message: "Cập nhật thông tin giảng viên thành công",
