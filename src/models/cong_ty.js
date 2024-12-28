@@ -1,49 +1,48 @@
 'Use strict';
-const {Model, DataTypes} = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    class Intern extends Model {
+    class Cong_ty extends Model {
     }
-    Intern.init(
+
+    Cong_ty.init(
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
-            name: {
+            ten_congty: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            start_date: {
-                type: DataTypes.DATE,
-                allowNull: false,
-            },
-            end_date: {
-                type: DataTypes.DATE,
-                allowNull: false,
-            },semester: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            academic_year: {
+            linh_vuc: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            description: {
+            dia_chi: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            is_active: {
-                type: DataTypes.TINYINT,
+            sdt: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            mo_ta: {
+                type: DataTypes.STRING,
                 allowNull: false,
             },
         },
         {
             sequelize,
-            modelName: 'Intern',
+            modelName: 'Cong_ty',
             timestamps: false,
+            tableName: 'cong_ty',
         }
     );
-    return Intern;
+    return Cong_ty;
 }

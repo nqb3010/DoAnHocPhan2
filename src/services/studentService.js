@@ -3,7 +3,6 @@ const db = require("../models/index");
 require("dotenv").config();
 const bcript = require("bcrypt");
 const { cleanString, tachHoTen } = require("../utils/unidecodeUtils");
-const faculty = require("../models/faculty");
 const { raw } = require("body-parser");
 const { where } = require("sequelize");
 const { stat } = require("fs");
@@ -11,18 +10,18 @@ const { stat } = require("fs");
 const getStudents = async () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const students = await db.Student.findAll({
-        attributes: ["student_code", "first_name", "last_name"],
+      const students = await db.Sinh_vien.findAll({
+        attributes: ["ma_sinhvien", "ho", "ten"],
         include: [
           {  
-            model: db.Class,
-            attributes: ["name"],
-            as: "Class",
+            model: db.Lop_hoc,
+            attributes: ["ten_lop"],
+            as: "lop_hoc",
             include: [
               {
-                model: db.Faculty,
-                attributes: ["name"],
-                as: "faculty",
+                model: db.Khoa,
+                attributes: ["ten_khoa"],
+                as: "khoa",
               },
             ],
           },
@@ -37,49 +36,12 @@ const getStudents = async () => {
   });
 };
 
-const getStudentById = async (id) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const student = await db.Student.findOne({
-        where: {
-          student_code: id,
-        },
-        include: [
-          {
-            model: db.Class,
-            attributes: ["name"],
-            as: "class",
-            include: [
-              {
-                model: db.Faculty,
-                attributes: ["name"],
-                as: "faculty",
-              },
-            ],
-          },
-        ],
-        raw: true,
-        nest: true,
-      });        
-      if (student === null) {
-        resolve({
-          status: 400,
-          message: "Sinh viên không tồn tại",
-        });
-      }
-      resolve(student);
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
-
 const addStudent = async (resust) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkStudent = await db.Student.findOne({
+      const checkStudent = await db.Sinh_vien.findOne({
         where: {
-          student_code: resust.student_code,
+          ma_sinhvien: resust.student_code,
         },
       });
       if (checkStudent) {
@@ -90,12 +52,12 @@ const addStudent = async (resust) => {
       } else {
         const hoten = tachHoTen(resust.full_name);
         console.log(hoten);
-        const newStudent = await db.Student.create({
-          student_code: resust.student_code,
-          first_name: hoten.first_name,
-          last_name: hoten.last_name,
-          class_id: resust.class_id,
-          status: 0,
+        const newStudent = await db.Sinh_vien.create({
+          ma_sinhvien: resust.student_code,
+          ho: hoten.first_name,
+          ten: hoten.last_name,
+          id_lophoc: resust.class_id,
+          trang_thai: 0,
         });
         if (newStudent !== null) {
           resolve({
@@ -120,29 +82,29 @@ const addStudent = async (resust) => {
 const updateStudent = async (id, student) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkStudent = await db.Student.findOne({
+      const checkStudent = await db.Sinh_vien.findOne({
         where: {
-          student_code: id,
+          ma_sinhvien: id,
         },
       });
       if (checkStudent) {
-        if(!student.full_name || !student.class_id || !student.student_code) {
+        if(!student.full_name || !student.class_id || !id) {
           resolve({
             status: 400,
             message: "Vui lòng nhập đầy đủ thông tin",
           });
         }
         const hoten = tachHoTen(student.full_name);
-        const updateStudent = await db.Student.update(
+        const updateStudent = await db.Sinh_vien.update(
           {
-            student_code: student.student_code,
-            first_name: hoten.first_name,
-            last_name: hoten.last_name,
-            class_id: student.class_id,
+            ma_sinhvien: student.student_code,
+            ho: hoten.first_name,
+            ten: hoten.last_name,
+            id_lophoc: student.class_id,
           },
           {
             where: {
-              student_code: id,
+              ma_sinhvien: id,
             },
           }
         );
@@ -173,8 +135,8 @@ const deleteStudent = async (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       // Tìm sinh viên
-      const checkStudent = await db.Student.findOne({
-        where: { student_code: id },
+      const checkStudent = await db.Sinh_vien.findOne({
+        where: { ma_sinhvien: id },
       });
   
       if (!checkStudent) {
@@ -184,10 +146,10 @@ const deleteStudent = async (id) => {
         });
       }
   
-      if (checkStudent.status === 1) {
+      if (checkStudent.trang_thai === 1) {
         // Nếu sinh viên có liên kết với giảng viên
-        const deleteInstructor = await db.Instructor.destroy({
-          where: { student_id: checkStudent.id },
+        const deleteInstructor = await db.Phan_cong_giangvien.destroy({
+          where: { id_sinhvien: checkStudent.id },
         });
   
         if (!deleteInstructor) {
@@ -199,8 +161,8 @@ const deleteStudent = async (id) => {
       }
   
       // Xóa sinh viên
-      const deleteStudent = await db.Student.destroy({
-        where: { student_code: id },
+      const deleteStudent = await db.Sinh_vien.destroy({
+        where: { ma_sinhvien: id },
       });
   
       if (deleteStudent) {
@@ -220,52 +182,9 @@ const deleteStudent = async (id) => {
     }
   });
 };
-
-const filterStudents = async (keyword) => {
-  return new Promise(async(resolve, reject) => {
-    try {
-      const studentCode = parseInt(keyword);
-      if(!isNaN(studentCode)) {
-        const students = await db.Student.findAll({
-          where: {
-            student_code: studentCode,
-          },
-        });
-        if (students.length > 0) {
-          resolve(students);
-        }
-        resolve({
-          status: 400,
-          message: "Không tìm thấy sinh viên",
-        });
-      }
-      else {
-        const hoten = tachHoTen(keyword);
-        const students = await db.Student.findAll({
-          where: {
-            first_name: { [db.Sequelize.Op.like]: `%${hoten.first_name}%` } , 
-            last_name: { [db.Sequelize.Op.like]: `%${hoten.last_name}%` } ,
-          },
-        });
-        if (students.length > 0) {
-          resolve(students);
-        }
-        resolve({
-          status: 400,
-          message: "Không tìm thấy sinh viên",
-        });
-      }
-    } catch (error) {
-      reject(error);
-    }
-  })
-};
-
 module.exports = {
   getStudents,
-  getStudentById,
   addStudent,
   updateStudent,
   deleteStudent,
-  filterStudents,
 };

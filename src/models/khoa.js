@@ -2,37 +2,38 @@
 const {Model, DataTypes} = require('sequelize');
 
 module.exports = (sequelize) => {
-    class Faculty extends Model {
+    class Khoa extends Model {
         static associate(models) {
-            Faculty.hasMany(models.Lecturer, {
-                foreignKey: 'faculty_id',
+            Khoa.hasMany(models.Giang_vien, {
+                foreignKey: 'id_khoa',
                 sourceKey: 'id',
-                as: 'lecturers',
+                as: 'giang_viens',
             });
-            Faculty.hasMany(models.Class, {
-                foreignKey: 'faculty_id',
+            Khoa.hasMany(models.Lop_hoc, {
+                foreignKey: 'id_khoa',
                 sourceKey: 'id',
-                as: 'classes',
+                as: 'lop_hocs',
             });
         }
     }
-    Faculty.init(
+    Khoa.init(
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
-            name: {
+            ten_khoa: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
         },
         {
             sequelize,
-            modelName: 'Faculty',
+            modelName: 'Khoa',
             timestamps: false,
+            tableName: 'Khoa',
         }
     );
-    return Faculty;
+    return Khoa;
 }

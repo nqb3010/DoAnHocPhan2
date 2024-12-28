@@ -2,45 +2,45 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  class Student extends Model {
+  class Sinh_vien extends Model {
     static associate(models) {
-      Student.belongsTo(models.Class, {
-        foreignKey: "class_id",
+      Sinh_vien.belongsTo(models.Lop_hoc, {
+        foreignKey: "id_lophoc",
         targetKey: "id",
-        as: "Class",
+        as: "lop_hoc",
       });
-      Student.hasMany(models.Instructor, {
-        foreignKey: "student_id",
+      Sinh_vien.hasMany(models.Phan_cong_giangvien, {
+        foreignKey: "id_sinhvien",
         sourceKey: "id",
-        as: "instructors",
+        as: "phan_cong_giangvien",
       });
     }
   }
 
-  Student.init(
+  Sinh_vien.init(
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      student_code: {
+      ma_sinhvien: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      first_name: {
+      ho: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      last_name: {
+      ten: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      class_id: {
+      id_lophoc: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      status: {
+      trang_thai: {
         type: DataTypes.TINYINT, // Lưu và hiển thị dưới dạng 0 hoặc 1
         allowNull: false,
         defaultValue: 0, // Giá trị mặc định là 0
@@ -48,9 +48,10 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: "Student",
+      modelName: "Sinh_vien",
       timestamps: false,
+      tableName: "Sinh_vien",
     }
   );
-  return Student;
+  return Sinh_vien;
 };

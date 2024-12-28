@@ -22,26 +22,21 @@ const initRoutes = (app) => {
 
     //intern routes
     app.get("/api/interns",middlewareController.verifyToken, internController.handleGetInterns);
-    app.get("/api/intern/:id",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, internController.handleGetInternById);
     app.post("/api/interns",middlewareController.verifyToken,middlewareController.verifyAdmin, internController.handleAddIntern);
     app.put("/api/intern/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, internController.handleUpdateIntern);
     app.delete("/api/intern/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, internController.handleDeleteIntern);
     //student routes
     app.get("/api/students",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, studentController.handleGetStudents);
-    app.get("/api/student/:id",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, studentController.handleGetStudentById);
     app.post("/api/students",middlewareController.verifyToken,middlewareController.verifyAdmin, studentController.handleAddStudent);
     app.put("/api/student/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, studentController.handleUpdateStudent);
     app.delete("/api/student/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, studentController.handleDeleteStudent);
-    app.get("/api/filterStudents",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, studentController.handleFilterStudents);
     //company routes
     app.get("/api/companies",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, companyController.handleGetCompanies);
-    app.get("/api/company/:id",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, companyController.handleGetCompanyById);
     app.post("/api/companies",middlewareController.verifyToken,middlewareController.verifyAdmin, companyController.handleAddCompany);
     app.put("/api/company/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, companyController.handleUpdateCompany);
     app.delete("/api/company/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, companyController.handleDeleteCompany);
     // lecturer routes
     app.get("/api/lecturers",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, lecturerController.handleGetLecturers);
-    app.get("/api/lecturer/:id",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, lecturerController.handleGetLecturerById);
     app.post("/api/lecturers",middlewareController.verifyToken,middlewareController.verifyAdmin, lecturerController.handleAddLecturer);
     app.put("/api/lecturer/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, lecturerController.handleUpdateLecturer);
     app.delete("/api/lecturer/:id",middlewareController.verifyToken,middlewareController.verifyAdmin, lecturerController.handleDeleteLecturer);

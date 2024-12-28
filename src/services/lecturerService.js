@@ -7,52 +7,22 @@ const bcript = require("bcrypt");
 const getLecturers = async () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const lecturers = await db.Lecturer.findAll({
+      const lecturers = await db.Giang_vien.findAll({
         include: [
             {
-                model: db.Faculty,
-                as: "faculty",
+                model: db.Khoa,
+                as: "khoa",
             },
             ],
         raw: true,
         nest: true,
       });
-      delete lecturers.user_id;
+      delete lecturers.id_nguoidung;
       resolve(lecturers);
     } catch (error) {
       reject(error);
     }
   });
-};
-
-const getLecturerById = async (id) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-        const lecturer = await db.Lecturer.findOne({
-            where: {
-            id: id,
-            },
-            include: [
-            {
-                model: db.User,
-                as: "user",
-                attributes: ["email", "role", "is_active"],
-            },
-            {
-                model: db.Faculty,
-                as: "faculty",
-            },
-            ],
-            raw: true,
-            nest: true,
-        });
-        delete lecturer.user_id;
-        delete lecturer.faculty_id;
-        resolve(lecturer);
-        } catch (error) {
-        reject(error);
-        }
-    });
 };
 
 const addLecturer = async (lecturer) => {
@@ -62,7 +32,7 @@ const addLecturer = async (lecturer) => {
             const passwordDefault = process.env.PASSWORD_DEFAULT;
             const hashPassword = bcript.hashSync(passwordDefault, 10);
             const hoten = tachHoTen(lecturer.full_name);
-            const checkLecturer = await db.Lecturer.findOne({
+            const checkLecturer = await db.Giang_vien.findOne({
                 where: {
                     email:`${cleanString(lecturer.full_name)}${mailDomain}`,
                 },
@@ -73,19 +43,19 @@ const addLecturer = async (lecturer) => {
                     message: "Giảng viên đã tồn tại",
                 });
             }
-            const newUser = await db.User.create({
+            const newUser = await db.Nguoi_dung.create({
                 email: `${cleanString(lecturer.full_name)}${mailDomain}`,
-                password: hashPassword,
-                role: "lecturer",
-                is_active: 1,
+                mat_khau: hashPassword,
+                vai_tro: "lecturer",
+                trang_thai: 1,
             });
-            const newLecturer = await db.Lecturer.create({
-                first_name: hoten.first_name,
-                last_name: hoten.last_name,
-                phone: lecturer.phone,
+            const newLecturer = await db.Giang_vien.create({
+                ho: hoten.first_name,
+                ten: hoten.last_name,
+                sdt: lecturer.phone,
                 email: newUser.email,
-                user_id: newUser.id,
-                faculty_id: lecturer.faculty_id,
+                id_nguoidung: newUser.id,
+                id_khoa: lecturer.faculty_id,
             });
 
             if (newLecturer && newUser !== null) {
@@ -116,7 +86,7 @@ const updateLecturer = async (id, lecturer) => {
     return new Promise(async (resolve, reject) => {
         try {
             // Kiểm tra giảng viên có tồn tại hay không
-            const checkLecturer = await db.Lecturer.findOne({
+            const checkLecturer = await db.Giang_vien.findOne({
                 where: { id: id },
             });
 
@@ -144,12 +114,12 @@ const updateLecturer = async (id, lecturer) => {
             const hoten = tachHoTen(lecturer.full_name);
             mailDomain = process.env.MAIL_DOMAIN;
             // Cập nhật thông tin giảng viên
-            const [updatedRows] = await db.Lecturer.update(
+            const [updatedRows] = await db.Giang_vien.update(
                 {
-                    first_name: hoten.first_name,
-                    last_name: hoten.last_name,
+                    ho: hoten.first_name,
+                    ten: hoten.last_name,
                     email : `${cleanString(lecturer.full_name)}${mailDomain}`,
-                    phone: lecturer.phone,
+                    sdt: lecturer.phone,
                 },
                 {
                     where: { id: id },
@@ -158,12 +128,12 @@ const updateLecturer = async (id, lecturer) => {
 
             if (updatedRows > 0) {
 
-                const [updatedUser] = await db.User.update(
+                const [updatedUser] = await db.Nguoi_dung.update(
                     {
                         email: `${cleanString(lecturer.full_name)}${mailDomain}`,
                     },
                     {
-                        where: { id: checkLecturer.user_id },
+                        where: { id: checkLecturer.id_nguoidung },
                     }
                 );
                 resolve({
@@ -190,7 +160,7 @@ const updateLecturer = async (id, lecturer) => {
 const deleteLecturer = async (id) => {
     try {
         // Kiểm tra giảng viên có tồn tại không
-        const checkLecturer = await db.Lecturer.findOne({
+        const checkLecturer = await db.Giang_vien.findOne({
             where: { id: id },
         });
 
@@ -200,9 +170,17 @@ const deleteLecturer = async (id) => {
                 message: "Không tìm thấy giảng viên",
             };
         }
-
+        const checkPhanCong = await db.Phan_cong_giangvien.findOne({
+            where: { id_giangvien: id },
+        });
+        if (checkPhanCong) {
+            return {
+                status: 400,
+                message: "Giảng viên đã được phân công không thể xóa",
+            };
+        }
         // Thực hiện xóa giảng viên
-        const deletedLecturer = await db.Lecturer.destroy({
+        const deletedLecturer = await db.Giang_vien.destroy({
             where: { id: id },
         });
 
@@ -232,7 +210,7 @@ const deleteLecturer = async (id) => {
 const getstudentsbyLecturerId = async (lecturerId) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const checkLecturer = await db.Lecturer.findOne({
+            const checkLecturer = await db.Giang_vien.findOne({
                 where: { id: lecturerId },
             });
             if (!checkLecturer) {
@@ -242,20 +220,32 @@ const getstudentsbyLecturerId = async (lecturerId) => {
                 });
                 return;
             }
-            const students = await db.Instructor.findAll({
-                where: { lecturer_id: lecturerId }, // Lọc theo giảng viên
+            const students = await db.Phan_cong_giangvien.findAll({
+                where: { id_giangvien: lecturerId }, // Lọc theo giảng viên
+                attributes: ['id'], // Lấy id sinh viên, id đợt thực tập, id công ty
                 include: [
                   {
-                    model: db.Student,
-                    as: 'student',
-                    attributes: ['student_code', 'first_name', 'last_name'], // Lấy thông tin sinh viên
+                    model: db.Sinh_vien,
+                    as: 'sinh_vien',
+                    attributes: ['ma_sinhvien', 'ho', 'ten'], // Lấy thông tin sinh viên
                     include: [
                       {
-                        model: db.Class,
-                        as: 'class',
-                        attributes: ['id','name'], // Lấy tên lớp
+                        model: db.Lop_hoc,
+                        as: 'lop_hoc',
+                        attributes: ['id','ten_lop'], // Lấy tên lớp
                       }
                     ]
+                  },
+                  {
+                    model: db.Dot_thuctap,
+                    as: 'dot_thuc_tap',
+                    attributes: ['id','ten_dot'], // Lấy tên đợt thực tập
+
+                  },
+                  {
+                    model: db.Cong_ty,
+                    as: 'cong_ty',
+                    attributes: ['id','ten_congty'], // Lấy tên công ty
                   }
                 ],
                 raw: true,
@@ -272,7 +262,6 @@ const getstudentsbyLecturerId = async (lecturerId) => {
 
 module.exports = {
     getLecturers,
-    getLecturerById,
     addLecturer,
     updateLecturer,
     deleteLecturer,

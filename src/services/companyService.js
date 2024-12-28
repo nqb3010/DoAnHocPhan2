@@ -4,7 +4,7 @@ const db = require("../models/index");
 const getCompanies = async () => {
     return new Promise(async (resolve, reject) => {
         try {
-        const companies = await db.Company.findAll({
+        const companies = await db.Cong_ty.findAll({
         });
         resolve(companies);
         } catch (error) {
@@ -13,31 +13,16 @@ const getCompanies = async () => {
     });
     };
 
-const getCompanyById = async (id) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-        const company = await db.Company.findOne({
-            where: {
-            company_id: id,
-            },
-        });
-        resolve(company);
-        } catch (error) {
-        reject(error);
-        }
-    });
-};
-
 const addCompany = async (company) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const newCompany = await db.Company.create({
-            name: company.name,
-            industry: company.industry,
-            address: company.address,
-            phone: company.phone,
+            const newCompany = await db.Cong_ty.create({
+            ten_congty: company.name,
+            linh_vuc: company.industry,
+            dia_chi: company.address,
+            sdt: company.phone,
             email: company.email,
-            description: company.description,
+            mo_ta: company.description,
             });
             if (newCompany != null) {
             resolve({
@@ -60,20 +45,20 @@ const addCompany = async (company) => {
 const updateCompany = async (id, company) => {
     return new Promise(async (resolve, reject) => {
         try {
-        const checkCompany = await db.Company.findOne({
+        const checkCompany = await db.Cong_ty.findOne({
             where: {
             id: id,
             },
         });
         if (checkCompany) {
-            const updateCompany = await db.Company.update(
+            const updateCompany = await db.Cong_ty.update(
             {
-                name: company.name,
-                industry: company.industry,
-                address: company.address,
-                phone: company.phone,
+                ten_congty: company.name,
+                linh_vuc: company.industry,
+                dia_chi: company.address,
+                sdt: company.phone,
                 email: company.email,
-                description: company.description,
+                mo_ta: company.description,
             },
             {
                 where: {
@@ -107,13 +92,24 @@ const updateCompany = async (id, company) => {
 const deleteCompany = async (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-        const checkCompany = await db.Company.findOne({
+        const checkCompany = await db.Cong_ty.findOne({
             where: {
             id: id,
             },
         });
         if (checkCompany) {
-            const deletedCompany = await db.Company.destroy({
+            checkPhanCong = await db.Phan_cong_giangvien.findOne({
+            where: {
+                id_congty: id,
+            },
+            });
+            if (checkPhanCong) {
+            resolve({
+                status: 400,
+                message: "Không thể xóa công ty đã được phân công",
+            });
+            }
+            const deletedCompany = await db.Cong_ty.destroy({
             where: {
                 id: id,
             },
@@ -143,7 +139,6 @@ const deleteCompany = async (id) => {
 
 module.exports = {
     getCompanies,
-    getCompanyById,
     addCompany,
     updateCompany,
     deleteCompany,

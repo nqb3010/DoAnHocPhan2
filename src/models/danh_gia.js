@@ -2,24 +2,24 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-    class Evaluation extends Model {
+    class Danh_gia extends Model {
         static associate(models) {
-            Evaluation.belongsTo(models.Instructor, {
-                foreignKey: "instructor_id",
+            Danh_gia.belongsTo(models.Phan_cong_giangvien, {
+                foreignKey: "id_phancong_giangvien",
                 targetKey: "id",
-                as: "instructor",
+                as: "phan_cong_giangvien",
             });
         }
     }
     
-    Evaluation.init(
+    Danh_gia.init(
         {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        instructor_id: {
+        id_phancong_giangvien: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
@@ -35,16 +35,16 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        final: {
+        tongket: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
         },
         {
         sequelize,
-        modelName: "Evaluation",
+        modelName: "Danh_gia",
         timestamps: false,
         }
     );
-    return Evaluation;
+    return Danh_gia;
     }

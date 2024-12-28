@@ -2,22 +2,22 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    class User extends Model {
+    class Nguoi_dung extends Model {
         static associate(models) {
-            User.hasOne(models.Lecturer, {
-                foreignKey: 'user_id',
-                as: 'lecturer',
+            Nguoi_dung.hasOne(models.Giang_vien, {
+                foreignKey: 'id_nguoidung',
+                as: 'giang_vien',
             });
         }
     }
-    User.init(
+    Nguoi_dung.init(
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
-            password: {
+            mat_khau: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
@@ -26,11 +26,11 @@ module.exports = (sequelize) => {
                 allowNull: false,
                 unique: true,
             },
-            role: {
-                type: DataTypes.ENUM('Admin', 'lecturer'),
+            vai_tro: {
+                type: DataTypes.ENUM('Admin', 'giang_vien'),
                 allowNull: false,
             },
-            is_active: {
+            trang_thai: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: true,
@@ -38,8 +38,10 @@ module.exports = (sequelize) => {
         },
         {
             sequelize,
-            modelName: 'User',
+            modelName: 'Nguoi_dung',
+            timestamps: false,
+            tableName: 'nguoi_dung',
         }
     );
-    return User;
+    return Nguoi_dung;
 };

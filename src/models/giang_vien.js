@@ -2,21 +2,21 @@
 const {Model, DataTypes} = require('sequelize');
 
 module.exports = (sequelize) => {
-    class Lecturer extends Model {
+    class Giang_vien extends Model {
         static associate(models) {
-            Lecturer.belongsTo(models.User, {
-                foreignKey: 'user_id',
+            Giang_vien.belongsTo(models.Nguoi_dung, {
+                foreignKey: 'id_nguoidung',
                 targetKey: 'id',
-                as: 'user'
+                as: 'nguoi_dung'
             });
-            Lecturer.belongsTo(models.Faculty, {
-                foreignKey: 'faculty_id',
+            Giang_vien.belongsTo(models.Khoa, {
+                foreignKey: 'id_khoa',
                 targetKey: 'id',
-                as: 'faculty'
+                as: 'khoa'
             });
         }
     }
-    Lecturer.init({
+    Giang_vien.init({
         id: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -24,15 +24,15 @@ module.exports = (sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        first_name: {
+        ho: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        last_name: {
+        ten: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        phone: {
+        sdt: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -40,18 +40,19 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        user_id: {
+        id_nguoidung: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        faculty_id: {
+        id_khoa: {
             type: DataTypes.INTEGER,
             allowNull: false
         }
     }, {
         sequelize,
-        modelName: 'Lecturer',
-        timestamps: false
+        modelName: 'Giang_vien',
+        timestamps: false,
+        tableName: 'Giang_vien',
     });
-    return Lecturer;
+    return Giang_vien;
 }

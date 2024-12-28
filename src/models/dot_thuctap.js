@@ -1,47 +1,47 @@
 'Use strict';
-const { Model, DataTypes } = require('sequelize');
+const {Model, DataTypes} = require('sequelize');
 
 module.exports = (sequelize) => {
-    class Company extends Model {
+    class Dot_thuctap extends Model {
     }
-
-    Company.init(
+    Dot_thuctap.init(
         {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
-            name: {
+            ten_dot: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            industry: {
+            bat_dau: {
+                type: DataTypes.DATE,
+                allowNull: false,
+            },
+            ket_thuc: {
+                type: DataTypes.DATE,
+                allowNull: false,
+            },
+            hoc_ky: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            address: {
+            mo_ta: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            phone: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            email: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            description: {
-                type: DataTypes.STRING,
+            trang_thai: {
+                type: DataTypes.TINYINT,
                 allowNull: false,
             },
         },
         {
             sequelize,
-            modelName: 'Company',
+            modelName: 'Dot_thuctap',
             timestamps: false,
+            tableName: 'dot_thuctap',
         }
     );
-    return Company;
+    return Dot_thuctap;
 }
