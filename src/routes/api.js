@@ -8,6 +8,7 @@ const lecturerController = require("../controllers/lecturerController");
 const adminController = require("../controllers/adminController");
 const dashboardController = require("../controllers/dashboardController");
 const classController = require("../controllers/classController");
+const danhgiaController = require("../controllers/danh_giaController");
 const initRoutes = (app) => {
     app.get("/", (req, res) => {
         res.send("Hello World!");
@@ -46,6 +47,9 @@ const initRoutes = (app) => {
 
     // class routes
     app.get("/api/classes",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetAllClasses);
-    app.get("/api/faculties",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetAllFaculties);    
+    app.get("/api/faculties",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetAllFaculties); 
+    
+    //danh gia routes
+    app.post("/api/danhgia",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, danhgiaController.danh_giaSinhVien);
 };
 module.exports = initRoutes;
