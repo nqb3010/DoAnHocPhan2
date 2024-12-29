@@ -27,12 +27,15 @@ const assignLecturer = async (facultyId, courseId, companyId, internId) => {
             const lecturerIds = lecturers.map(lecturer => lecturer.id);  
             let index = 0;
             for (let student of students) {
-                await db.Phan_cong_giangvien.create({
+              const PcongGV =  await db.Phan_cong_giangvien.create({
                     id_sinhvien: student.id,
                     id_giangvien: lecturerIds[index],
                     id_dotthuctap: internId,
                     id_congty: companyId,
                     trang_thai: "đã phê duyệt" 
+                });
+                await db.Danh_gia.create({
+                    id_phancong_giangvien: PcongGV.id,
                 });
                 await db.Sinh_vien.update({
                     trang_thai: 1

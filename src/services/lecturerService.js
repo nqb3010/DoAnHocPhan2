@@ -46,7 +46,7 @@ const addLecturer = async (lecturer) => {
             const newUser = await db.Nguoi_dung.create({
                 email: `${cleanString(lecturer.full_name)}${mailDomain}`,
                 mat_khau: hashPassword,
-                vai_tro: "lecturer",
+                vai_tro: "giang_vien",
                 trang_thai: 1,
             });
             const newLecturer = await db.Giang_vien.create({

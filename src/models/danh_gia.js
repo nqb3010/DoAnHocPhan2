@@ -25,19 +25,19 @@ module.exports = (sequelize) => {
         },
         heso1: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         heso2: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         heso3: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         tongket: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         },
         {

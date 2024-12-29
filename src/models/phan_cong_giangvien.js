@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
                 as: "cong_ty",
             });
             Phan_cong_giangvien.hasMany(models.Danh_gia, {
-                foreignKey: "id_phancong",
+                foreignKey: "id_phancong_giangvien",
                 sourceKey: "id",
                 as: "danh_gia",
             });

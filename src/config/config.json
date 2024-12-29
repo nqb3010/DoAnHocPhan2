@@ -3,7 +3,7 @@
       "username": "admin",
       "password": "I6hW3QgF]VyvpC5V",
       "database": "quanlydotthuctap",
-      "host": "47.245.124.228",
+      "host": "20.2.136.157",
       "dialect": "mysql",
       "logging": false,
       "query": {

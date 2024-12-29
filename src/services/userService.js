@@ -31,6 +31,11 @@ const login = async (email, password) => {
                      message: 'Tài khoản chưa kích hoạt'
                 });
               }
+            if(user.vai_tro === "giang_vien") {
+                const giang_vien = await db.Giang_vien.findOne({ where: { id_nguoidung: user.id } });
+                user.id_giangvien = giang_vien.id;
+                user.ho_ten = giang_vien.ho + ' ' + giang_vien.ten;
+            }
            delete user.mat_khau;
            delete user.trang_thai;
            console.log(user.email + ' ' + "login success");

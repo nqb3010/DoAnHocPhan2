@@ -1,5 +1,6 @@
 const { stat } = require("fs");
 const db = require("../models/index");
+const { raw } = require("body-parser");
 
 const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
     return new Promise(async(resolve, reject) => {
@@ -79,6 +80,61 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
     })
 }
 
+const getDanhGia = async (Gv) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!Gv) {
+                resolve({
+                    status: 400,
+                    message: "Vui lòng nhập id giảng viên"
+                })
+                return;
+            }
+            const checkGv = await db.Giang_vien.findOne({
+                where: {
+                    id: Gv
+                }
+            });
+            if(!checkGv) {
+                resolve({
+                    status: 400,
+                    message: "Giảng viên không tồn tại"
+                })
+                return;
+            }
+            const result = await db.Danh_gia.findAll({
+                include: [
+                    {
+                        model: db.Phan_cong_giangvien,
+                        as: 'phan_cong_giangvien',
+                        where: {
+                            id_giangvien: Gv
+                        },
+                        attributes: ['id'],
+                        include: [
+                            {
+                                model: db.Sinh_vien,
+                                as: 'sinh_vien',
+                                attributes: ['id', 'ho', 'ten']
+                            }
+                        ]
+                    }
+                ],
+                raw: true,
+                nest: true,
+            },
+            );
+            resolve({
+                status: 200,
+                data: result
+            })
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
 module.exports = {
-    danh_giaSinhVien
+    danh_giaSinhVien,
+    getDanhGia
 }
