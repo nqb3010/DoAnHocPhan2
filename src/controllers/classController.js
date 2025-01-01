@@ -17,7 +17,37 @@ const handlegetAllFaculties = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
+const handlegetCourses = async (req, res) => {
+    try {
+        const courses = await classService.getCourses();
+        res.status(200).json(courses);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
+
+const handlegetCompany = async (req, res) => {
+    try {
+        const company = await classService.getCompany();
+        res.status(200).json(company);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+const handlegetInternship = async (req, res) => {
+    try {
+        const internship = await classService.getInternship();
+        res.status(200).json(internship);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
 module.exports = {
     handlegetAllClasses,
     handlegetAllFaculties,
+    handlegetCourses,
+    handlegetCompany,
+    handlegetInternship
 };

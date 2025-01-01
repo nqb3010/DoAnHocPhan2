@@ -10,11 +10,13 @@ const getAllClasses = async () => {
                 include: [
                   { 
                     model: db.Khoa, 
-                    as: 'khoa' 
+                    as: 'khoa' ,
+                    attributes: ['ten_khoa'],
                   }, 
                   { 
                     model: db.Khoa_hoc,  // Note: Capitalize 'Course'
                     as: 'khoa_hoc', 
+                    attributes: ['ten_khoahoc'],
                   }
                 ], 
                 raw: true, 
@@ -38,7 +40,43 @@ const getAllFaculties = async () => {
     })
 };
 
+const getCourses = async () => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const courses = await db.Khoa_hoc.findAll();
+            resolve(courses);
+        } catch (error) {
+            reject(error);
+        }
+    })
+};
+
+const getCompany = async () => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const companies = await db.Cong_ty.findAll();
+            resolve(companies);
+        } catch (error) {
+            reject(error);
+        }
+    })
+};
+
+const getInternship = async () => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const internships = await db.Dot_thuctap.findAll();
+            resolve(internships);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
 module.exports = {
     getAllClasses,
     getAllFaculties,
+    getCourses,
+    getCompany,
+    getInternship
 };
