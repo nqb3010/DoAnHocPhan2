@@ -53,7 +53,8 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
             // }
             let tongdiem = (heso1 + (heso2 * 2) + (heso3 * 3)) / 6;
             let tongdiemRound = parseFloat(tongdiem.toFixed(1));
-            const result = await db.Danh_gia.create({
+            console.log(tongdiemRound);
+            const result = await db.Danh_gia.update({
                 id_phancong_giangvien: id_phancong,
                 heso1: heso1,
                 heso2: heso2,
