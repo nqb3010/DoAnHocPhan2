@@ -1,6 +1,7 @@
 const { stat } = require("fs");
 const db = require("../models/index");
 const { raw } = require("body-parser");
+const { where } = require("sequelize");
 
 const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
     return new Promise(async(resolve, reject) => {
@@ -52,6 +53,7 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
             //     return;
             // }
             let tongdiem = (heso1 + (heso2 * 2) + (heso3 * 3)) / 6;
+            console.log(tongdiem);
             let tongdiemRound = parseFloat(tongdiem.toFixed(1));
             console.log(tongdiemRound);
             const result = await db.Danh_gia.update({
@@ -60,7 +62,13 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
                 heso2: heso2,
                 heso3: heso3,
                 tongket: tongdiemRound
+            },
+            {
+                where: {
+                    id_phancong_giangvien: id_phancong
+                }
             });
+
             if(result) {
                 await db.Phan_cong_giangvien.update({
                     trang_thai: "đã hoàn thành"
@@ -73,7 +81,13 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
             resolve({
                 status: 200,
                 message: "Đánh giá thành công",
-                data: result
+                data: {
+                    id_phancong_giangvien: id_phancong,
+                    heso1: heso1,
+                    heso2: heso2,
+                    heso3: heso3,
+                    tongket: tongdiemRound
+                }
             })
         } catch (error) {
             reject(error);
