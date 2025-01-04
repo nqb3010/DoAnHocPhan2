@@ -38,19 +38,19 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
                 })
                 return;
             }
-            const checkDanhGia = await db.Danh_gia.findOne({
-                where: {
-                    id_phancong_giangvien: id_phancong
-                },
-                attributes: ['id', 'id_phancong_giangvien', 'heso1', 'heso2', 'heso3', 'tongket']
-            });
-            if(checkDanhGia) {
-                resolve({
-                    status: 400,
-                    message: "Sinh viên đã được đánh giá"
-                })
-                return;
-            }
+            // const checkDanhGia = await db.Danh_gia.findOne({
+            //     where: {
+            //         id_phancong_giangvien: id_phancong
+            //     },
+            //     attributes: ['id', 'id_phancong_giangvien', 'heso1', 'heso2', 'heso3', 'tongket']
+            // });
+            // if(checkDanhGia) {
+            //     resolve({
+            //         status: 400,
+            //         message: "Sinh viên đã được đánh giá"
+            //     })
+            //     return;
+            // }
             let tongdiem = (heso1 + (heso2 * 2) + (heso3 * 3)) / 6;
             let tongdiemRound = parseFloat(tongdiem.toFixed(1));
             const result = await db.Danh_gia.create({
