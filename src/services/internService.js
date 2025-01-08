@@ -1,5 +1,6 @@
 const { where } = require('sequelize');
 const db = require('../models/index');
+const dayjs = require('dayjs');
 
 const getInterns = async () => {
     return new Promise(async (resolve, reject) => {
@@ -38,39 +39,48 @@ const getInterns = async () => {
 const addIntern = async (intern) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if(!intern.name || !intern.start_date || !intern.end_date || !intern.semester || !intern.loai){
+            // Kiểm tra dữ liệu đầu vào
+            if (!intern.name || !intern.start_date || !intern.end_date || !intern.semester || !intern.loai) {
                 resolve({
                     status: 400,
                     message: "Vui Lòng Nhập Đầy Đủ Thông Tin",
                 });
+                return;
             }
+
+            // Chuyển đổi ngày từ dd-mm-yyyy sang yyyy-mm-dd
+            const startDate = dayjs(intern.start_date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+            const endDate = dayjs(intern.end_date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+
+            // Thêm dữ liệu vào cơ sở dữ liệu
             const newIntern = await db.Dot_thuctap.create({
                 ten_dot: intern.name,
-                bat_dau: intern.start_date,
-                ket_thuc: intern.end_date,
+                bat_dau: startDate,
+                ket_thuc: endDate,
                 hoc_ky: intern.semester,
                 loai: intern.loai,
                 trang_thai: "Đang mở",
             });
-            if(newIntern != null){
+
+            // Kiểm tra kết quả và trả về phản hồi
+            if (newIntern != null) {
                 resolve({
                     status: 200,
                     message: "Thêm Đợt Thực Tập Thành Công",
-                    data : newIntern
+                    data: newIntern,
                 });
-            }
-            else{
+            } else {
                 resolve({
                     status: 400,
                     message: "Thêm Đợt Thực Tập Thất Bại",
-                    data : newIntern
+                    data: newIntern,
                 });
             }
         } catch (error) {
             reject(error);
         }
     });
-}
+};
 
 const updateIntern = async (internId, intern) => {
     return new Promise(async (resolve, reject) => {
