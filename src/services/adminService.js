@@ -18,13 +18,13 @@ const assignLecturer = async (item) => {
                     trang_thai: "đang thực tập"
                 });
                 if(thuctap) {
-                    await db.Giangvien_phutrach.create({
+                    const GVPT= await db.Giangvien_phutrach.create({
                         id_sinhvien: sinhvien.id,
                         id_giangvien: element.id_giangvien,
                         id_thuctap : thuctap.id
                     });
                     await db.Danh_gia.create({
-                        id_giangvien_phutrach: thuctap.id,
+                        id_giangvien_phutrach: GVPT.id,
                     });
                 }
                 
