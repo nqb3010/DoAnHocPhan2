@@ -4,14 +4,31 @@ const db = require('../models/index');
 const getInterns = async () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const interns = await db.Dot_thuctap.findAll(
-                {
-                    where: {
-                        trang_thai: 1
-                    },
-                }
-            );
-            resolve(interns);
+            const interns = await db.Dot_thuctap.findAll({
+                where: {
+                    trang_thai: 1
+                },
+            });
+
+            // Format dates in the result
+            const formattedInterns = interns.map(intern => {
+                // Create a function to format date
+                const formatDate = (dateString) => {
+                    const date = new Date(dateString);
+                    const day = date.getDate().toString().padStart(2, '0');
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                };
+
+                return {
+                    ...intern,
+                    bat_dau: formatDate(intern.bat_dau),
+                    ket_thuc: formatDate(intern.ket_thuc)
+                };
+            });
+
+            resolve(formattedInterns);
         } catch (error) {
             reject(error);
         }
