@@ -4,11 +4,6 @@ const { Model, DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
     class Danh_gia extends Model {
         static associate(models) {
-            Danh_gia.belongsTo(models.Phan_cong_giangvien, {
-                foreignKey: "id_phancong_giangvien",
-                targetKey: "id",
-                as: "phan_cong_giangvien",
-            });
         }
     }
     

@@ -27,12 +27,12 @@ module.exports = (sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            mo_ta: {
-                type: DataTypes.STRING,
+            loai: {
+                type: DataTypes.ENUM('Thực tập cơ sở','Thực tập kỹ thuật', 'Thực tập tốt nghiệp'),
                 allowNull: false,
             },
             trang_thai: {
-                type: DataTypes.TINYINT,
+                type: DataTypes.ENUM('Đang mở', 'Đã kết thúc'),
                 allowNull: false,
             },
         },

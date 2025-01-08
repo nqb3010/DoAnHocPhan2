@@ -9,11 +9,6 @@ module.exports = (sequelize) => {
         targetKey: "id",
         as: "lop_hoc",
       });
-      Sinh_vien.hasMany(models.Phan_cong_giangvien, {
-        foreignKey: "id_sinhvien",
-        sourceKey: "id",
-        as: "phan_cong_giangvien",
-      });
     }
   }
 
