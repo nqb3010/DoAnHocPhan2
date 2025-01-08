@@ -73,10 +73,26 @@ const getInternship = async () => {
     })
 }
 
+const getLecturersbyFaculty = async (faculty) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const lecturers = await db.Giang_vien.findAll({
+                where: { id_khoa: faculty },
+                attributes: ['id', 'ho', 'ten'],
+                raw: true,
+                nest: true,
+            });
+            resolve(lecturers);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 module.exports = {
     getAllClasses,
     getAllFaculties,
     getCourses,
     getCompany,
-    getInternship
+    getInternship,
+    getLecturersbyFaculty,
 };

@@ -44,10 +44,20 @@ const handlegetInternship = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 }
+
+const handlegetLecturersbyFaculty = async (req, res) => {
+    try {
+        const lecturers = await classService.getLecturersbyFaculty(req.params.faculty);
+        res.status(200).json(lecturers);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
 module.exports = {
     handlegetAllClasses,
     handlegetAllFaculties,
     handlegetCourses,
     handlegetCompany,
-    handlegetInternship
+    handlegetInternship,
+    handlegetLecturersbyFaculty
 };

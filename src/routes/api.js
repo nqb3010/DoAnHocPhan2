@@ -51,7 +51,7 @@ const initRoutes = (app) => {
     app.get("/api/courses",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetCourses);
     app.get("/api/companies",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetCompany);
     app.get("/api/internships",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetInternship);
-
+    app.get("/api/lecturers/:faculty",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetLecturersbyFaculty);
     //danh gia routes
     app.post("/api/danhgia",middlewareController.verifyToken,middlewareController.verifyLecturer, danhgiaController.danh_giaSinhVien);
     app.get("/api/danhgia/:id",middlewareController.verifyToken,middlewareController.verifyLecturer, danhgiaController.getDanhGia);

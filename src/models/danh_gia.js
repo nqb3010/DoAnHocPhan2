@@ -14,19 +14,15 @@ module.exports = (sequelize) => {
             primaryKey: true,
             autoIncrement: true,
         },
-        id_phancong_giangvien: {
+        id_giangvien_phutrach: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        heso1: {
+        danhgiacuacongty: {
             type: DataTypes.INTEGER,
             allowNull: true,
         },
-        heso2: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        heso3: {
+        danhgiacuagiangvien: {
             type: DataTypes.INTEGER,
             allowNull: true,
         },

@@ -3,7 +3,7 @@ const db = require("../models/index");
 const { raw } = require("body-parser");
 const { where } = require("sequelize");
 
-const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
+const danh_giaSinhVien = async (id_phancong, heso1, heso2) => {
     return new Promise(async(resolve, reject) => {
         try {
             if(!heso1 || !heso2 || !heso3) {
@@ -13,7 +13,7 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
                 })
                 return;
             }
-            if(heso1 < 0 || heso1 > 10 || heso2 < 0 || heso2 > 10 || heso3 < 0 || heso3 > 10) {
+            if(heso1 < 0 || heso1 > 10 || heso2 < 0 || heso2 > 10) {
                 resolve({
                     status: 400,
                     message: "Hệ số không hợp lệ"
@@ -27,7 +27,7 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
                 })
                 return;
             }
-            const checkPhanCong = await db.Phan_cong_giangvien.findOne({
+            const checkPhanCong = await db.Thuc_tap.findOne({
                 where: {
                     id: id_phancong
                 }
@@ -39,33 +39,20 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2, heso3) => {
                 })
                 return;
             }
-            // const checkDanhGia = await db.Danh_gia.findOne({
-            //     where: {
-            //         id_phancong_giangvien: id_phancong
-            //     },
-            //     attributes: ['id', 'id_phancong_giangvien', 'heso1', 'heso2', 'heso3', 'tongket']
-            // });
-            // if(checkDanhGia) {
-            //     resolve({
-            //         status: 400,
-            //         message: "Sinh viên đã được đánh giá"
-            //     })
-            //     return;
-            // }
-            let tongdiem = (heso1 + (heso2 * 2) + (heso3 * 3)) / 6;
+            // tính tổng điểm hệ số 1 lấy 65% hệ số 2 lấy 35%
+            let tongdiem = heso1 * 0.65 + heso2 * 0.35;
             console.log(tongdiem);
             let tongdiemRound = parseFloat(tongdiem.toFixed(1));
             console.log(tongdiemRound);
             const result = await db.Danh_gia.update({
-                id_phancong_giangvien: id_phancong,
-                heso1: heso1,
-                heso2: heso2,
-                heso3: heso3,
+                id_giangvien_phutrach: id_phancong,
+                danhgiacuacongty: heso1,
+                danhgiacuagiangvien: heso2,
                 tongket: tongdiemRound
             },
             {
                 where: {
-                    id_phancong_giangvien: id_phancong
+                    id_giangvien_phutrach: id_phancong
                 }
             });
 

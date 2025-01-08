@@ -220,7 +220,7 @@ const getstudentsbyLecturerId = async (lecturerId) => {
                 });
                 return;
             }
-            const students = await db.Phan_cong_giangvien.findAll({
+            const students = await db.Giangvien_phutrach.findAll({
                 where: { id_giangvien: lecturerId }, // Lọc theo giảng viên
                 attributes: ['id'], // Lấy id sinh viên, id đợt thực tập, id công ty
                 include: [
@@ -235,17 +235,6 @@ const getstudentsbyLecturerId = async (lecturerId) => {
                         attributes: ['id','ten_lop'], // Lấy tên lớp
                       }
                     ]
-                  },
-                  {
-                    model: db.Dot_thuctap,
-                    as: 'dot_thuc_tap',
-                    attributes: ['id','ten_dot'], // Lấy tên đợt thực tập
-
-                  },
-                  {
-                    model: db.Cong_ty,
-                    as: 'cong_ty',
-                    attributes: ['id','ten_congty'], // Lấy tên công ty
                   }
                 ],
                 raw: true,
