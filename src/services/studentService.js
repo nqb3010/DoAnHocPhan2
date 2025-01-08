@@ -24,39 +24,54 @@ const getStudents = async () => {
                 as: "khoa",
               },
             ],
-            },    
+          },
+          {
+            model: db.Giangvien_phutrach,
+            as: "giangvien_phutrach",
+            include: [
               {
-                model: db.Giangvien_phutrach,
-                as: "giangvien_phutrach",
-                include: [
-                  {
-                    model: db.Giang_vien,
-                    attributes: ["ho", "ten"],
-                    as: "giang_vien",
-                  },
-                ],
-              },
-              {
-                model: db.Thuc_tap,
-                as: "thuc_tap",
-                include: [
-                  {
-                    model: db.Dot_thuctap,
-                    attributes: ["ten_dot","loai"],
-                    as: "dot_thuc_tap",
-                  },
-                  {
-                    model: db.Cong_ty,
-                    attributes: ["ten_congty"],
-                    as: "cong_ty",
-                  },
-                ],
+                model: db.Giang_vien,
+                attributes: ["ho", "ten"],
+                as: "giang_vien",
               },
             ],
-        raw: true,
+          },
+          {
+            model: db.Thuc_tap,
+            as: "thuc_tap",
+            separate: true, // Add this to get internships as a nested array
+            include: [
+              {
+                model: db.Dot_thuctap,
+                attributes: ["ten_dot", "loai"],
+                as: "dot_thuc_tap",
+              },
+              {
+                model: db.Cong_ty,
+                attributes: ["ten_congty"],
+                as: "cong_ty",
+              },
+            ],
+          },
+        ],
+        raw: false, // Change this to false to get Sequelize instances
         nest: true,
-      });      
-      resolve(students);
+      });
+
+      // Convert to plain objects and handle the structure
+      const formattedStudents = students.map(student => {
+        const plainStudent = student.get({ plain: true });
+        return {
+          ma_sinhvien: plainStudent.ma_sinhvien,
+          ho: plainStudent.ho,
+          ten: plainStudent.ten,
+          lop_hoc: plainStudent.lop_hoc,
+          giangvien_phutrach: plainStudent.giangvien_phutrach,
+          thuc_tap: plainStudent.thuc_tap // This will now be an array of internships
+        };
+      });
+
+      resolve(formattedStudents);
     } catch (error) {
       reject(error);
     }
@@ -270,7 +285,7 @@ const getStudentsWithoutInternship = async (khoaId, dotThuctapId) => {
               FROM thuc_tap tt
               INNER JOIN dot_thuctap dt ON tt.id_dotthuctap = dt.id
               WHERE dt.id != ${dotThuctapId}
-              AND tt.trang_thai = 'completed'
+              AND tt.trang_thai = 'Đang thực tập'
             )
           `)
         ]

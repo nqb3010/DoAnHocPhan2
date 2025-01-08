@@ -11,6 +11,15 @@ const assignLecturer = async (item) => {
                         ma_sinhvien: element.ma_sinhvien
                     }
                 });
+                const checkThuctap = await db.Thuc_tap.findOne({
+                    where: {
+                        id_sinhvien: sinhvien.id,
+                        id_dotthuctap: element.id_dotthuctap
+                    }
+                });
+                if(checkThuctap) {
+                    return;
+                }
                 const thuctap = await db.Thuc_tap.create({
                     id_sinhvien: sinhvien.id,
                     id_dotthuctap: element.id_dotthuctap,
