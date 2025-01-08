@@ -42,7 +42,7 @@ const getStudents = async () => {
                 include: [
                   {
                     model: db.Dot_thuctap,
-                    attributes: ["ten_dot"],
+                    attributes: ["ten_dot","loai"],
                     as: "dot_thuc_tap",
                   },
                   {
