@@ -24,39 +24,47 @@ const getStudents = async () => {
                 as: "khoa",
               },
             ],
-            },    
+          },
+          {
+            model: db.Giangvien_phutrach,
+            as: "giangvien_phutrach",
+            // Thêm required: false để sử dụng LEFT JOIN thay vì INNER JOIN
+            required: false,
+            // Thêm separate: true để tránh nhân bản dữ liệu
+            separate: true,
+            include: [
               {
-                model: db.Giangvien_phutrach,
-                as: "giangvien_phutrach",
-                include: [
-                  {
-                    model: db.Giang_vien,
-                    attributes: ["ho", "ten"],
-                    as: "giang_vien",
-                  },
-                ],
-              },
-              {
-                model: db.Thuc_tap,
-                as: "thuc_tap",
-                limit : 1,
-                include: [
-                  {
-                    model: db.Dot_thuctap,
-                    attributes: ["ten_dot","loai"],
-                    as: "dot_thuc_tap",
-                  },
-                  {
-                    model: db.Cong_ty,
-                    attributes: ["ten_congty"],
-                    as: "cong_ty",
-                  },
-                ],
+                model: db.Giang_vien,
+                attributes: ["ho", "ten"],
+                as: "giang_vien",
               },
             ],
-        raw: true,
+          },
+          {
+            model: db.Thuc_tap,
+            as: "thuc_tap",
+            // Thêm required: false để sử dụng LEFT JOIN
+            required: false,
+            // Thêm separate: true để tránh nhân bản dữ liệu
+            separate: true,
+            include: [
+              {
+                model: db.Dot_thuctap,
+                attributes: ["ten_dot","loai"],
+                as: "dot_thuc_tap",
+              },
+              {
+                model: db.Cong_ty,
+                attributes: ["ten_congty"],
+                as: "cong_ty",
+              },
+            ],
+          },
+        ],
+        raw: false,
         nest: true,
-      });      
+      });
+
       resolve(students);
     } catch (error) {
       reject(error);
