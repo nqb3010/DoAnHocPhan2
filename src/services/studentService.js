@@ -39,7 +39,7 @@ const getStudents = async () => {
               {
                 model: db.Thuc_tap,
                 as: "thuc_tap",
-                Limit : 1,
+                limit : 1,
                 include: [
                   {
                     model: db.Dot_thuctap,
