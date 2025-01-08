@@ -209,9 +209,65 @@ const deleteStudent = async (id) => {
     }
   });
 };
+
+const getStudentsWithoutInternship = async (khoaId, dotThuctapId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const students = await db.Sinh_vien.findAll({
+        attributes: ["id", "ma_sinhvien", "ho", "ten", "trang_thai"],
+        include: [
+          {
+            model: db.Lop_hoc,
+            as: "lop_hoc",
+            attributes: ["ten_lop"],
+            required: true,
+            include: [
+              {
+                model: db.Khoa,
+                as: "khoa",
+                attributes: ["ten_khoa"],
+                where: {
+                  id: khoaId
+                }
+              }
+            ]
+          },
+          {
+            model: db.Giangvien_phutrach,
+            as: "giangvien_phutrach",
+            required: false,
+            include: [
+              {
+                model: db.Giang_vien,
+                as: "giang_vien",
+                attributes: ["ho", "ten"], 
+              }
+            ]
+          }
+        ],
+        where: 
+          db.Sequelize.literal(`
+            sinh_vien.id NOT IN (
+              SELECT id_sinhvien 
+              FROM thuc_tap 
+              WHERE id_dotthuctap = ${dotThuctapId}
+            )
+          `),
+        raw: true,
+        nest: true
+      });
+
+      resolve(students);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   getStudents,
   addStudent,
   updateStudent,
   deleteStudent,
+  getStudentsWithoutInternship,
 };

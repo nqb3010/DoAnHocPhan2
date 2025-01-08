@@ -55,11 +55,22 @@ const handleFilterStudents = async (req, res) => {
     }
 };
 
+const handleGetStudentsWithoutInternship = async (req, res) => {
+    try {
+        const {khoaId, dotThuctapId} = req.body;
+        const students = await studentService.getStudentsWithoutInternship(khoaId, dotThuctapId);
+        res.json(students);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     handleGetStudents,
     handleGetStudentById,
     handleAddStudent,
     handleUpdateStudent,
     handleDeleteStudent,
-    handleFilterStudents
+    handleFilterStudents,
+    handleGetStudentsWithoutInternship
 };

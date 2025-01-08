@@ -6,7 +6,7 @@ const { where } = require("sequelize");
 const danh_giaSinhVien = async (id_phancong, heso1, heso2) => {
     return new Promise(async(resolve, reject) => {
         try {
-            if(!heso1 || !heso2 || !heso3) {
+            if(!heso1 || !heso2) {
                 resolve({
                     status: 400,
                     message: "Vui lòng nhập đầy đủ hệ số"
@@ -24,18 +24,6 @@ const danh_giaSinhVien = async (id_phancong, heso1, heso2) => {
                 resolve({
                     status: 400,
                     message: "Vui lòng nhập id phân công"
-                })
-                return;
-            }
-            const checkPhanCong = await db.Thuc_tap.findOne({
-                where: {
-                    id: id_phancong
-                }
-            });
-            if(!checkPhanCong) {
-                resolve({
-                    status: 400,
-                    message: "Sinh viên chưa đi thực tập"
                 })
                 return;
             }
