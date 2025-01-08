@@ -47,11 +47,10 @@ const addIntern = async (intern) => {
                 });
                 return;
             }
-
+            console.log(intern);
             // Chuyển đổi ngày từ dd-mm-yyyy sang yyyy-mm-dd
             const startDate = dayjs(intern.start_date, 'DD-MM-YYYY').format('YYYY-MM-DD');
             const endDate = dayjs(intern.end_date, 'DD-MM-YYYY').format('YYYY-MM-DD');
-
             // Thêm dữ liệu vào cơ sở dữ liệu
             const newIntern = await db.Dot_thuctap.create({
                 ten_dot: intern.name,
