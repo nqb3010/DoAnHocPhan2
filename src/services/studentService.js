@@ -211,57 +211,88 @@ const deleteStudent = async (id) => {
 };
 
 const getStudentsWithoutInternship = async (khoaId, dotThuctapId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const students = await db.Sinh_vien.findAll({
-        attributes: ["id", "ma_sinhvien", "ho", "ten", "trang_thai"],
-        include: [
-          {
-            model: db.Lop_hoc,
-            as: "lop_hoc",
-            attributes: ["ten_lop"],
-            required: true,
-            include: [
-              {
-                model: db.Khoa,
-                as: "khoa",
-                attributes: ["ten_khoa"],
-                where: {
-                  id: khoaId
-                }
+  try {
+    const students = await db.Sinh_vien.findAll({
+      attributes: [
+        'id',
+        'ma_sinhvien',
+        'ho',
+        'ten',
+        'trang_thai'
+      ],
+      include: [
+        {
+          model: db.Lop_hoc,
+          as: 'lop_hoc',
+          attributes: ['ten_lop'],
+          required: true,
+          include: [
+            {
+              model: db.Khoa,
+              as: 'khoa',
+              attributes: ['ten_khoa'],
+              where: {
+                id: khoaId
               }
-            ]
-          },
-          {
-            model: db.Giangvien_phutrach,
-            as: "giangvien_phutrach",
-            required: false,
-            include: [
-              {
-                model: db.Giang_vien,
-                as: "giang_vien",
-                attributes: ["ho", "ten"], 
-              }
-            ]
-          }
-        ],
-        where: 
+            }
+          ]
+        },
+        {
+          model: db.Giangvien_phutrach,
+          as: 'giangvien_phutrach',
+          attributes: ['id', 'id_sinhvien', 'id_giangvien'],
+          required: false,
+          include: [
+            {
+              model: db.Giang_vien,
+              as: 'giang_vien',
+              attributes: ['id', 'ho', 'ten']
+            }
+          ],
+          // Add separate: true to get an array of supervisors instead of duplicating records
+          separate: true
+        }
+      ],
+      where: {
+        [db.Sequelize.Op.and]: [
+          // Not in current internship period
           db.Sequelize.literal(`
             sinh_vien.id NOT IN (
-              SELECT id_sinhvien 
+              SELECT DISTINCT id_sinhvien 
               FROM thuc_tap 
               WHERE id_dotthuctap = ${dotThuctapId}
             )
           `),
-        raw: true,
-        nest: true
-      });
+          // Not completed internship in other periods
+          db.Sequelize.literal(`
+            sinh_vien.id NOT IN (
+              SELECT DISTINCT tt.id_sinhvien
+              FROM thuc_tap tt
+              INNER JOIN dot_thuctap dt ON tt.id_dotthuctap = dt.id
+              WHERE dt.id != ${dotThuctapId}
+              AND tt.trang_thai = 'completed'
+            )
+          `)
+        ]
+      },
+      // order: [['ma_sinhvien', 'ASC']],
+      distinct: true,
+      raw: false // Changed to false to allow separate loading of associations
+    });
 
-      resolve(students);
-    } catch (error) {
-      reject(error);
-    }
-  });
+    // Transform the results to match the expected format
+    const formattedStudents = students.map(student => {
+      const plainStudent = student.get({ plain: true });
+      return {
+        ...plainStudent,
+        giangvien_phutrach: plainStudent.giangvien_phutrach[0] || null // Take the first supervisor if exists
+      };
+    });
+
+    return formattedStudents;
+  } catch (error) {
+    throw new Error(`Error getting students without internship: ${error.message}`);
+  }
 };
 
 module.exports = {
