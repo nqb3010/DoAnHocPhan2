@@ -279,7 +279,7 @@ const getStudentsWithoutInternship = async (khoaId, dotThuctapId) => {
               FROM thuc_tap tt
               INNER JOIN dot_thuctap dt ON tt.id_dotthuctap = dt.id
               WHERE dt.id != ${dotThuctapId}
-              AND tt.trang_thai = 'Đang thực tập'
+              AND tt.trang_thai = 'Đã hoàn thành'
             )
           `)
         ]
