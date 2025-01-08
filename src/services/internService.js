@@ -21,7 +21,7 @@ const getInterns = async () => {
 const addIntern = async (intern) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if(!intern.name || !intern.start_date || !intern.end_date || !intern.semester || !intern.loai || !intern.trang_thai){
+            if(!intern.name || !intern.start_date || !intern.end_date || !intern.semester || !intern.loai){
                 resolve({
                     status: 400,
                     message: "Vui Lòng Nhập Đầy Đủ Thông Tin",
@@ -33,7 +33,7 @@ const addIntern = async (intern) => {
                 ket_thuc: intern.end_date,
                 hoc_ky: intern.semester,
                 loai: intern.loai,
-                trang_thai: intern.trang_thai,
+                trang_thai: "Đang mở",
             });
             if(newIntern != null){
                 resolve({
