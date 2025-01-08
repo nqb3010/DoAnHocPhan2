@@ -28,10 +28,6 @@ const getStudents = async () => {
           {
             model: db.Giangvien_phutrach,
             as: "giangvien_phutrach",
-            // Thêm required: false để sử dụng LEFT JOIN thay vì INNER JOIN
-            required: false,
-            // Thêm separate: true để tránh nhân bản dữ liệu
-            separate: true,
             include: [
               {
                 model: db.Giang_vien,
@@ -43,10 +39,6 @@ const getStudents = async () => {
           {
             model: db.Thuc_tap,
             as: "thuc_tap",
-            // Thêm required: false để sử dụng LEFT JOIN
-            required: false,
-            // Thêm separate: true để tránh nhân bản dữ liệu
-            separate: true,
             include: [
               {
                 model: db.Dot_thuctap,
@@ -61,7 +53,7 @@ const getStudents = async () => {
             ],
           },
         ],
-        raw: false,
+        raw: true,
         nest: true,
       });
 
