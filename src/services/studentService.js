@@ -24,42 +24,39 @@ const getStudents = async () => {
                 as: "khoa",
               },
             ],
-          },
-          {
-            model: db.Giangvien_phutrach,
-            as: "giangvien_phutrach", 
-            include: [
+            },    
               {
-                model: db.Giang_vien,
-                attributes: ["ho", "ten"],
-                as: "giang_vien",
+                model: db.Giangvien_phutrach,
+                as: "giangvien_phutrach",
+                include: [
+                  {
+                    model: db.Giang_vien,
+                    attributes: ["ho", "ten"],
+                    as: "giang_vien",
+                  },
+                ],
+              },
+              {
+                model: db.Thuc_tap,
+                as: "thuc_tap",
+                Limit : 1,
+                include: [
+                  {
+                    model: db.Dot_thuctap,
+                    attributes: ["ten_dot","loai"],
+                    as: "dot_thuc_tap",
+                  },
+                  {
+                    model: db.Cong_ty,
+                    attributes: ["ten_congty"],
+                    as: "cong_ty",
+                  },
+                ],
               },
             ],
-          },
-          {
-            model: db.Thuc_tap,
-            as: "thuc_tap",
-            // Thêm limit và order để chỉ lấy 1 đợt thực tập (ví dụ: đợt mới nhất)
-            limit: 1,
-            order: [['id', 'DESC']], // hoặc sắp xếp theo trường ngày nếu có
-            include: [
-              {
-                model: db.Dot_thuctap,
-                attributes: ["ten_dot", "loai"],
-                as: "dot_thuc_tap",
-              },
-              {
-                model: db.Cong_ty,
-                attributes: ["ten_congty"],
-                as: "cong_ty",
-              },
-            ],
-          },
-        ],
         raw: true,
         nest: true,
-      });
-
+      });      
       resolve(students);
     } catch (error) {
       reject(error);
