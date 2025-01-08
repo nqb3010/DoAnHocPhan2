@@ -14,6 +14,11 @@ module.exports = (sequelize) => {
                 targetKey: "id",
                 as: "giang_vien",
             });
+            Giangvien_phutrach.belongsTo(models.Thuc_tap, {
+                foreignKey: "id_thuctap",
+                targetKey: "id",
+                as: "thuc_tap",
+            });
         }
     }
 
@@ -29,6 +34,10 @@ module.exports = (sequelize) => {
                 allowNull: false,
             },
             id_giangvien: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            id_thuctap: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },

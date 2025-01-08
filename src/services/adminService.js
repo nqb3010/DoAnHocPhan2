@@ -4,7 +4,7 @@ const db = require('../models/index');
 const assignLecturer = async (item) => {
     return new Promise(async(resolve, reject) => {
         try {
-            console.log(item);
+            // console.log(item);
             item.forEach(async (element) => {
                 const sinhvien = await db.Sinh_vien.findOne({
                     where: {
