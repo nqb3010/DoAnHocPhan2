@@ -27,7 +27,7 @@ const getStudents = async () => {
           },
           {
             model: db.Giangvien_phutrach,
-            as: "giangvien_phutrach",
+            as: "giangvien_phutrach", 
             include: [
               {
                 model: db.Giang_vien,
@@ -39,7 +39,9 @@ const getStudents = async () => {
           {
             model: db.Thuc_tap,
             as: "thuc_tap",
-            separate: true, // Add this to get internships as a nested array
+            // Thêm limit và order để chỉ lấy 1 đợt thực tập (ví dụ: đợt mới nhất)
+            limit: 1,
+            order: [['id', 'DESC']], // hoặc sắp xếp theo trường ngày nếu có
             include: [
               {
                 model: db.Dot_thuctap,
@@ -54,24 +56,11 @@ const getStudents = async () => {
             ],
           },
         ],
-        raw: false, // Change this to false to get Sequelize instances
+        raw: true,
         nest: true,
       });
 
-      // Convert to plain objects and handle the structure
-      const formattedStudents = students.map(student => {
-        const plainStudent = student.get({ plain: true });
-        return {
-          ma_sinhvien: plainStudent.ma_sinhvien,
-          ho: plainStudent.ho,
-          ten: plainStudent.ten,
-          lop_hoc: plainStudent.lop_hoc,
-          giangvien_phutrach: plainStudent.giangvien_phutrach,
-          thuc_tap: plainStudent.thuc_tap // This will now be an array of internships
-        };
-      });
-
-      resolve(formattedStudents);
+      resolve(students);
     } catch (error) {
       reject(error);
     }
