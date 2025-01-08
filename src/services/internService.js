@@ -71,7 +71,7 @@ const updateIntern = async (internId, intern) => {
                     message: "Không Tìm Thấy Đợt Thực Tập",
                 });
             }else{
-                if(!intern.name || !intern.start_date || !intern.end_date || !intern.semester || !intern.description){
+                if(!intern.name || !intern.start_date || !intern.end_date || !intern.semester || !intern.loai){
                     resolve({
                         status: 400,
                         message: "Vui Lòng Nhập Đầy Đủ Thông Tin",
@@ -83,7 +83,7 @@ const updateIntern = async (internId, intern) => {
                         bat_dau: intern.start_date,
                         ket_thuc: intern.end_date,
                         hoc_ky: intern.semester,
-                        mo_ta: intern.description,
+                        loai: intern.loai,
                     },
                     {
                         where: {
@@ -126,7 +126,7 @@ const deleteIntern = async (internId) => {
                     message: "Không Tìm Thấy Đợt Thực Tập",
                 });
             }else{
-                checkPhancong = await db.Phan_cong_giangvien.findAll(
+                checkPhancong = await db.Thuc_tap.findAll(
                     {
                         where: {
                             id_dotthuctap: internId
