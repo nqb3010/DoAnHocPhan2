@@ -13,7 +13,7 @@ const getStudents = async () => {
       const students = await db.Sinh_vien.findAll({
         attributes: ["ma_sinhvien", "ho", "ten"],
         include: [
-          {  
+          {
             model: db.Lop_hoc,
             attributes: ["ten_lop"],
             as: "lop_hoc",
@@ -24,11 +24,38 @@ const getStudents = async () => {
                 as: "khoa",
               },
             ],
-          },
-        ],
+            },    
+              {
+                model: db.Giangvien_phutrach,
+                as: "giangvien_phutrach",
+                include: [
+                  {
+                    model: db.Giang_vien,
+                    attributes: ["ho", "ten"],
+                    as: "giang_vien",
+                  },
+                ],
+              },
+              {
+                model: db.Thuc_tap,
+                as: "thuc_tap",
+                include: [
+                  {
+                    model: db.Dot_thuctap,
+                    attributes: ["ten_dot"],
+                    as: "dot_thuc_tap",
+                  },
+                  {
+                    model: db.Cong_ty,
+                    attributes: ["ten_congty"],
+                    as: "cong_ty",
+                  },
+                ],
+              },
+            ],
         raw: true,
         nest: true,
-      });
+      });      
       resolve(students);
     } catch (error) {
       reject(error);

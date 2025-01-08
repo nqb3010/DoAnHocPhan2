@@ -9,6 +9,16 @@ module.exports = (sequelize) => {
         targetKey: "id",
         as: "lop_hoc",
       });
+      Sinh_vien.hasMany(models.Thuc_tap, {
+        foreignKey: "id_sinhvien",
+        sourceKey: "id",
+        as: "thuc_tap",
+      });
+      Sinh_vien.hasMany(models.Giangvien_phutrach, {
+        foreignKey: "id_sinhvien",
+        sourceKey: "id",
+        as: "giangvien_phutrach",
+      });
     }
   }
 
