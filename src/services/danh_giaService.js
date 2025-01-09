@@ -6,6 +6,7 @@ const { where } = require("sequelize");
 const danh_giaSinhVien = async (Danhgia) => {
     return new Promise(async(resolve, reject) => {
         try {
+            console.log(Danhgia);
             let messages = [];
             let hasSuccess = false;
             await Promise.all(Danhgia.map(async (element) => {
@@ -51,7 +52,6 @@ const danh_giaSinhVien = async (Danhgia) => {
                 if(result) {
                     hasSuccess = true;
                 }
-
         }))
         if(hasSuccess) {
             resolve({
