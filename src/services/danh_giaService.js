@@ -3,10 +3,23 @@ const db = require("../models/index");
 const { raw } = require("body-parser");
 const { where } = require("sequelize");
 
-const danh_giaSinhVien = async (Danhgia) => {
+const danh_giaSinhVien = async (input) => {
+    // Convert single object to array if necessary
+    const Danhgia = Array.isArray(input) ? input : [input];
+
     // Input validation
-    if (!Array.isArray(Danhgia) || Danhgia.length === 0) {
+    if (!Danhgia.length) {
         throw new Error('Dữ liệu đánh giá không hợp lệ');
+    }
+
+    // Validate required fields
+    const validateInput = (item) => {
+        return item.Msv && item.DiemCongTy && item.DiemGiangVien;
+    };
+
+    // Validate if all items have required fields
+    if (!Danhgia.every(validateInput)) {
+        throw new Error('Dữ liệu thiếu thông tin. Yêu cầu: Msv, DiemCongTy, DiemGiangVien');
     }
 
     const validateScores = (score) => {
@@ -18,7 +31,10 @@ const danh_giaSinhVien = async (Danhgia) => {
     const processEvaluation = async (element) => {
         // Validate input scores
         if (!validateScores(element.DiemCongTy) || !validateScores(element.DiemGiangVien)) {
-            throw new Error(`Điểm đánh giá không hợp lệ cho sinh viên ${element.Msv}`);
+            return {
+                success: false,
+                message: `Điểm đánh giá không hợp lệ cho sinh viên ${element.Msv}. Điểm phải từ 0-10`
+            };
         }
 
         // Find student
