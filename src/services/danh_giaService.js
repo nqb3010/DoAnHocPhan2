@@ -4,72 +4,107 @@ const { raw } = require("body-parser");
 const { where } = require("sequelize");
 
 const danh_giaSinhVien = async (Danhgia) => {
-    return new Promise(async(resolve, reject) => {
-        try {
-            console.log(Danhgia);
-            let messages = [];
-            let hasSuccess = false;
-            await Promise.all(Danhgia.map(async (element) => {
-                const sinhvien = await db.Sinh_vien.findOne({
-                    where: {
-                        ma_sinhvien: element.Msv
-                    }
-                });
-                if(!sinhvien) {
-                    messages.push(`Không tìm thấy sinh viên với mã ${element.Msv}`);
-                    return;
-                }
-                const checkGVPT = await db.Giangvien_phutrach.findOne({
-                    where: {
-                        id_sinhvien: sinhvien.id
-                    }
-                });
-                if(!checkGVPT) {
-                    messages.push(`Sinh viên ${element.Msv} chưa được phân công giảng viên phụ trách`);
-                    return;
-                }
-                const checkDanhGia = await db.Danh_gia.findOne({
-                    where: {
-                        id_giangvien_phutrach: checkGVPT.id
-                    }
-                });
-                if(!checkDanhGia) {
-                    messages.push(`Sinh viên ${element.Msv} không tồn tại`);
-                    return;
-                }
-                diemtong = parseFloat(element.DiemCongTy)*0.65 + parseFloat(element.DiemGiangVien)*0.35;
-                diemtongReal = diemtong.toFixed(1);
-                const result = await db.Danh_gia.update({
-                    danhgiacuacongty: element.DiemCongTy,
-                    danhgiacuagiangvien: element.DiemGiangVien,
-                    tongket:diemtongReal
-                },
-                {
-                    where: {
-                        id_giangvien_phutrach: checkGVPT.id
-                    }
-                });
-                if(result) {
-                    hasSuccess = true;
-                }
-        }))
-        if(hasSuccess) {
-            resolve({
-                status: 200,
-                message: "Đánh giá thành công"
-            })
-        } else {
-            resolve({
-                status: 400,
-                message: messages
-            })
+    // Input validation
+    if (!Array.isArray(Danhgia) || Danhgia.length === 0) {
+        throw new Error('Dữ liệu đánh giá không hợp lệ');
+    }
+
+    const validateScores = (score) => {
+        const numScore = parseFloat(score);
+        return !isNaN(numScore) && numScore >= 0 && numScore <= 10;
+    };
+
+    // Process each evaluation
+    const processEvaluation = async (element) => {
+        // Validate input scores
+        if (!validateScores(element.DiemCongTy) || !validateScores(element.DiemGiangVien)) {
+            throw new Error(`Điểm đánh giá không hợp lệ cho sinh viên ${element.Msv}`);
         }
 
-        } catch (error) {
-            reject(error);
+        // Find student
+        const sinhvien = await db.Sinh_vien.findOne({
+            where: { ma_sinhvien: element.Msv }
+        });
+        
+        if (!sinhvien) {
+            return {
+                success: false,
+                message: `Không tìm thấy sinh viên với mã ${element.Msv}`
+            };
         }
-    })
-}
+
+        // Find supervising lecturer
+        const giangvienPhutrach = await db.Giangvien_phutrach.findOne({
+            where: { id_sinhvien: sinhvien.id }
+        });
+
+        if (!giangvienPhutrach) {
+            return {
+                success: false,
+                message: `Sinh viên ${element.Msv} chưa được phân công giảng viên phụ trách`
+            };
+        }
+
+        // Find existing evaluation
+        const danhGia = await db.Danh_gia.findOne({
+            where: { id_giangvien_phutrach: giangvienPhutrach.id }
+        });
+
+        if (!danhGia) {
+            return {
+                success: false,
+                message: `Không tìm thấy bảng đánh giá cho sinh viên ${element.Msv}`
+            };
+        }
+
+        // Calculate final score
+        const COMPANY_WEIGHT = 0.65;
+        const LECTURER_WEIGHT = 0.35;
+        const diemtong = (parseFloat(element.DiemCongTy) * COMPANY_WEIGHT) + 
+                        (parseFloat(element.DiemGiangVien) * LECTURER_WEIGHT);
+        const diemtongReal = diemtong.toFixed(1);
+
+        // Update evaluation
+        const result = await db.Danh_gia.update({
+            danhgiacuacongty: element.DiemCongTy,
+            danhgiacuagiangvien: element.DiemGiangVien,
+            tongket: diemtongReal
+        }, {
+            where: { id_giangvien_phutrach: giangvienPhutrach.id }
+        });
+
+        return {
+            success: !!result,
+            message: result ? 'Cập nhật thành công' : 'Cập nhật thất bại'
+        };
+    };
+
+    try {
+        const results = await Promise.all(Danhgia.map(processEvaluation));
+        
+        // Check if any evaluation was successful
+        const hasSuccess = results.some(result => result.success);
+        const errorMessages = results
+            .filter(result => !result.success)
+            .map(result => result.message);
+
+        if (hasSuccess) {
+            return {
+                status: 200,
+                message: "Đánh giá thành công",
+                details: errorMessages.length > 0 ? errorMessages : undefined
+            };
+        } else {
+            return {
+                status: 400,
+                message: errorMessages
+            };
+        }
+    } catch (error) {
+        console.error('Lỗi trong quá trình đánh giá:', error);
+        throw new Error('Đã xảy ra lỗi trong quá trình đánh giá sinh viên');
+    }
+};
 
 const getDanhGia = async (Gv) => {
     return new Promise(async(resolve, reject) => {
