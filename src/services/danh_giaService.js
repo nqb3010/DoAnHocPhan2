@@ -105,7 +105,7 @@ const getDanhGia = async (Gv) => {
                             {
                                 model: db.Sinh_vien,
                                 as: 'sinh_vien',
-                                attributes: ['id', 'ho', 'ten']
+                                attributes: ['id','ma_sinhvien', 'ho', 'ten']
                             }
                         ]
                     }
