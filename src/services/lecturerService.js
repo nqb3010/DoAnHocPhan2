@@ -233,6 +233,23 @@ const getstudentsbyLecturerId = async (lecturerId) => {
                         model: db.Lop_hoc,
                         as: 'lop_hoc',
                         attributes: ['id','ten_lop'], // Lấy tên lớp
+                      },
+                      {
+                        model: db.Thuc_tap,
+                        as: 'thuc_tap',
+                        attributes: ['id'], // Lấy id thực tập
+                        include: [
+                            {
+                                model: db.Dot_thuctap,
+                                as: 'dot_thuc_tap',
+                                attributes: ['id','ten_dot', 'loai'], // Lấy tên đợt thực tập
+                              },
+                                {
+                                    model: db.Cong_ty,
+                                    as: 'cong_ty',
+                                    attributes: ['id','ten_congty'], // Lấy tên công ty
+                                },
+                            ],
                       }
                     ]
                   }

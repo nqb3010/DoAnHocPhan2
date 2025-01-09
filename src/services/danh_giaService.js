@@ -95,8 +95,8 @@ const getDanhGia = async (Gv) => {
             const result = await db.Danh_gia.findAll({
                 include: [
                     {
-                        model: db.Phan_cong_giangvien,
-                        as: 'phan_cong_giangvien',
+                        model: db.Giangvien_phutrach,
+                        as: 'giangvien_phutrach',
                         where: {
                             id_giangvien: Gv
                         },

@@ -19,6 +19,11 @@ module.exports = (sequelize) => {
                 targetKey: "id",
                 as: "thuc_tap",
             });
+            Giangvien_phutrach.hasMany(models.Danh_gia, {
+                foreignKey: "id_giangvien_phutrach",
+                sourceKey: "id",
+                as: "danh_gia",
+            });
         }
     }
 
