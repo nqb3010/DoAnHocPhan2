@@ -3,67 +3,68 @@ const db = require("../models/index");
 const { raw } = require("body-parser");
 const { where } = require("sequelize");
 
-const danh_giaSinhVien = async (id_phancong, heso1, heso2) => {
+const danh_giaSinhVien = async (Danhgia) => {
     return new Promise(async(resolve, reject) => {
         try {
-            if(!heso1 || !heso2) {
-                resolve({
-                    status: 400,
-                    message: "Vui lòng nhập đầy đủ hệ số"
-                })
-                return;
-            }
-            if(heso1 < 0 || heso1 > 10 || heso2 < 0 || heso2 > 10) {
-                resolve({
-                    status: 400,
-                    message: "Hệ số không hợp lệ"
-                })
-                return;
-            }
-            if(!id_phancong) {
-                resolve({
-                    status: 400,
-                    message: "Vui lòng nhập id phân công"
-                })
-                return;
-            }
-            // tính tổng điểm hệ số 1 lấy 65% hệ số 2 lấy 35%
-            let tongdiem = heso1 * 0.65 + heso2 * 0.35;
-            console.log(tongdiem);
-            let tongdiemRound = parseFloat(tongdiem.toFixed(1));
-            console.log(tongdiemRound);
-            const result = await db.Danh_gia.update({
-                id_giangvien_phutrach: id_phancong,
-                danhgiacuacongty: heso1,
-                danhgiacuagiangvien: heso2,
-                tongket: tongdiemRound
-            },
-            {
-                where: {
-                    id_giangvien_phutrach: id_phancong
-                }
-            });
-
-            if(result) {
-                await db.Phan_cong_giangvien.update({
-                    trang_thai: "đã hoàn thành"
-                }, {
+            let messages = [];
+            let hasSuccess = false;
+            await Promise.all(Danhgia.map(async (element) => {
+                const sinhvien = await db.Sinh_vien.findOne({
                     where: {
-                        id: id_phancong
+                        ma_sinhvien: element.Msv
                     }
                 });
-            }
+                if(!sinhvien) {
+                    messages.push(`Không tìm thấy sinh viên với mã ${element.Msv}`);
+                    return;
+                }
+                const checkGVPT = await db.Giangvien_phutrach.findOne({
+                    where: {
+                        id_sinhvien: sinhvien.id
+                    }
+                });
+                if(!checkGVPT) {
+                    messages.push(`Sinh viên ${element.Msv} chưa được phân công giảng viên phụ trách`);
+                    return;
+                }
+                const checkDanhGia = await db.Danh_gia.findOne({
+                    where: {
+                        id_giangvien_phutrach: checkGVPT.id
+                    }
+                });
+                if(!checkDanhGia) {
+                    messages.push(`Sinh viên ${element.Msv} không tồn tại`);
+                    return;
+                }
+                diemtong = parseFloat(element.DiemCongTy)*0.65 + parseFloat(element.DiemGiangVien)*0.35;
+                diemtongReal = diemtong.toFixed(1);
+                const result = await db.Danh_gia.update({
+                    danhgiacuacongty: element.DiemCongTy,
+                    danhgiacuagiangvien: element.DiemGiangVien,
+                    tongket:diemtongReal
+                },
+                {
+                    where: {
+                        id_giangvien_phutrach: checkGVPT.id
+                    }
+                });
+                if(result) {
+                    hasSuccess = true;
+                }
+
+        }))
+        if(hasSuccess) {
             resolve({
                 status: 200,
-                message: "Đánh giá thành công",
-                data: {
-                    id_phancong_giangvien: id_phancong,
-                    heso1: heso1,
-                    heso2: heso2,
-                    heso3: heso3,
-                    tongket: tongdiemRound
-                }
+                message: "Đánh giá thành công"
             })
+        } else {
+            resolve({
+                status: 400,
+                message: messages
+            })
+        }
+
         } catch (error) {
             reject(error);
         }
