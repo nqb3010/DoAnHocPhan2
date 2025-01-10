@@ -88,7 +88,11 @@ const danh_giaSinhVien = async (input) => {
         }, {
             where: { id_giangvien_phutrach: giangvienPhutrach.id }
         });
-
+        await db.Thuc_tap.update({
+            trang_thai: "Đã hoàn thành"
+        }, {
+            where: { id_sinhvien: sinhvien.id }
+        });
         return {
             success: !!result,
             message: result ? 'Cập nhật thành công' : 'Cập nhật thất bại'
