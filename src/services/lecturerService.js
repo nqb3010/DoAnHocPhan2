@@ -170,7 +170,7 @@ const deleteLecturer = async (id) => {
                 message: "Không tìm thấy giảng viên",
             };
         }
-        const checkPhanCong = await db.Phan_cong_giangvien.findOne({
+        const checkPhanCong = await db.Giangvien_phutrach.findOne({
             where: { id_giangvien: id },
         });
         if (checkPhanCong) {
