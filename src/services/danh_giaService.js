@@ -126,7 +126,7 @@ const danh_giaSinhVien = async (input) => {
     }
 };
 
-const getDanhGia = async (Gv) => {
+const getDanhGia = async (Gv,id_dtt) => {
     return new Promise(async(resolve, reject) => {
         try {
             if(!Gv) {
@@ -162,6 +162,13 @@ const getDanhGia = async (Gv) => {
                                 model: db.Sinh_vien,
                                 as: 'sinh_vien',
                                 attributes: ['id','ma_sinhvien', 'ho', 'ten']
+                            },
+                            {
+                                model: db.Thuc_tap,
+                                as: 'thuc_tap',
+                                where: {
+                                    id_dotthuctap: id_dtt
+                                },
                             }
                         ]
                     }

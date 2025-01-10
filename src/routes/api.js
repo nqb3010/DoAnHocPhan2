@@ -55,6 +55,6 @@ const initRoutes = (app) => {
     app.post("/api/getStudentsWithoutInternship",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, studentController.handleGetStudentsWithoutInternship);
     //danh gia routes
     app.post("/api/danhgia",middlewareController.verifyToken,middlewareController.verifyLecturer, danhgiaController.danh_giaSinhVien);
-    app.get("/api/danhgia/:id",middlewareController.verifyToken,middlewareController.verifyLecturer, danhgiaController.getDanhGia);
+    app.get("/api/danhgia/",middlewareController.verifyToken,middlewareController.verifyLecturer, danhgiaController.getDanhGia);
 };
 module.exports = initRoutes;

@@ -12,8 +12,9 @@ const danh_giaSinhVien = async (req, res) => {
 
 const getDanhGia = async (req, res) => {
     try {
-        const Gv = req.params.id;
-        const result = await danh_giaService.getDanhGia(Gv);
+        const Gv = req.query.Gv;
+        const id_dtt = req.query.id_dtt;
+        const result = await danh_giaService.getDanhGia(Gv, id_dtt);
         res.json(result);
     } catch (error) {
         res.status(500).send(error.message);
