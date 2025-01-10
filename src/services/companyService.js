@@ -1,5 +1,7 @@
 const e = require("express");
 const db = require("../models/index");
+const bcript = require("bcrypt");
+require("dotenv").config();
 
 const getCompanies = async () => {
     return new Promise(async (resolve, reject) => {
@@ -23,6 +25,15 @@ const addCompany = async (company) => {
             sdt: company.phone,
             email: company.email,
             mo_ta: company.description,
+            });
+            const passwordDefault = process.env.PASSWORD_DEFAULT;
+            const hashPassword = bcript.hashSync(passwordDefault, 10);
+            const newAccount = await db.Nguoi_dung.create({
+                email: company.email,
+                mat_khau: hashPassword,
+                vai_tro: "cong_ty",
+                id_congty: newCompany.id,
+                trang_thai: 1,
             });
             if (newCompany != null) {
             resolve({

@@ -35,7 +35,11 @@ const middlewareController = {
             return res.status(401).json({ message: "Unauthorized" });
         }
     },
-
+    verifyAll : (req, res, next) => {
+        middlewareController.verifyToken(req, res, () => {
+            next();
+        });
+    },
     // Middleware for admin only
     verifyAdmin: (req, res, next) => {
         middlewareController.verifyToken(req, res, () => {
@@ -89,7 +93,17 @@ const middlewareController = {
                 return res.status(403).json({ message: "Bạn không có quyền truy cập" });
             }
         });
+    },
+    verifyCongTy: (req, res, next) => {
+        middlewareController.verifyToken(req, res, () => {
+            if (req.user.role === "cong_ty") {
+                next();
+            } else {
+                return res.status(403).json({ message: "Bạn không có quyền truy cập" });
+            }
+        });
     }
 };
+
 
 module.exports = middlewareController;

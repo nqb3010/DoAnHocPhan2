@@ -17,7 +17,7 @@ const initRoutes = (app) => {
         res.send("API is working");
     });
     //dashboard routes
-    app.get("/api/dashboard",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin,dashboardController.handleGetDashboard);
+    app.get("/api/dashboard",middlewareController.verifyToken,middlewareController.verifyAll,dashboardController.handleGetDashboard);
     //user routes
     app.post("/api/auth/login",userController.handleLogin);
 
@@ -55,6 +55,8 @@ const initRoutes = (app) => {
     app.post("/api/getStudentsWithoutInternship",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, studentController.handleGetStudentsWithoutInternship);
     //danh gia routes
     app.post("/api/danhgia",middlewareController.verifyToken,middlewareController.verifyLecturer, danhgiaController.danh_giaSinhVien);
+    app.post("/api/danhgiacongty",middlewareController.verifyToken,middlewareController.verifyCongTy, danhgiaController.danhgiacongty);
     app.get("/api/danhgia/",middlewareController.verifyToken,middlewareController.verifyLecturer, danhgiaController.getDanhGia);
+    app.get("/api/danhgiacongty",middlewareController.verifyToken,middlewareController.verifyCongTy, danhgiaController.getdanhgiacuacongty);
 };
 module.exports = initRoutes;

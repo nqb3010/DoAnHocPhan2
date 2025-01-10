@@ -27,8 +27,12 @@ module.exports = (sequelize) => {
                 unique: true,
             },
             vai_tro: {
-                type: DataTypes.ENUM('Admin', 'giang_vien'),
+                type: DataTypes.ENUM('Admin', 'giang_vien', 'cong_ty'),
                 allowNull: false,
+            },
+            id_congty: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
             },
             trang_thai: {
                 type: DataTypes.BOOLEAN,
