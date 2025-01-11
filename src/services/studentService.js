@@ -254,9 +254,7 @@ const getStudentsWithoutInternship = async (lopId, dotThuctapId) => {
           separate: true
         }
       ],
-      where: {
-        [db.Sequelize.Op.and]: [
-          // Not in current internship period
+      where:
           db.Sequelize.literal(`
             sinh_vien.id NOT IN (
               SELECT DISTINCT id_sinhvien 
@@ -264,18 +262,6 @@ const getStudentsWithoutInternship = async (lopId, dotThuctapId) => {
               WHERE id_dotthuctap = ${dotThuctapId}
             )
           `),
-          // Not completed internship in other periods
-          db.Sequelize.literal(`
-            sinh_vien.id NOT IN (
-              SELECT DISTINCT tt.id_sinhvien
-              FROM thuc_tap tt
-              INNER JOIN dot_thuctap dt ON tt.id_dotthuctap = dt.id
-              WHERE dt.id != ${dotThuctapId}
-              AND tt.trang_thai = 'Đã hoàn thành'
-            )
-          `)
-        ]
-      },
       // order: [['ma_sinhvien', 'ASC']],
       distinct: true,
       raw: false // Changed to false to allow separate loading of associations
