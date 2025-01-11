@@ -230,6 +230,13 @@ const getStudentsWithoutInternship = async (lopId, dotThuctapId) => {
           where: {
             id: lopId
           },
+          include: [
+            {
+              model: db.Khoa,
+              as: 'khoa',
+              attributes: ['ten_khoa']
+            }
+          ],
         },
         {
           model: db.Giangvien_phutrach,
