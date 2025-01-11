@@ -53,6 +53,7 @@ const initRoutes = (app) => {
     app.get("/api/internships",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetInternship);
     app.get("/api/lecturers/:faculty",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetLecturersbyFaculty);
     app.post("/api/getStudentsWithoutInternship",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, studentController.handleGetStudentsWithoutInternship);
+    app.get("/api/getClassbyfacultyandcourses",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetClassbyFacultyandCourses);
     //danh gia routes
     app.post("/api/danhgia",middlewareController.verifyToken,middlewareController.verifyLecturer, danhgiaController.danh_giaSinhVien);
     app.post("/api/danhgiacongty",middlewareController.verifyToken,middlewareController.verifyCongTy, danhgiaController.danhgiacongty);

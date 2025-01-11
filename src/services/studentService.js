@@ -211,7 +211,7 @@ const deleteStudent = async (id) => {
   });
 };
 
-const getStudentsWithoutInternship = async (khoaId, dotThuctapId) => {
+const getStudentsWithoutInternship = async (lopId, dotThuctapId) => {
   try {
     const students = await db.Sinh_vien.findAll({
       attributes: [
@@ -227,16 +227,9 @@ const getStudentsWithoutInternship = async (khoaId, dotThuctapId) => {
           as: 'lop_hoc',
           attributes: ['ten_lop'],
           required: true,
-          include: [
-            {
-              model: db.Khoa,
-              as: 'khoa',
-              attributes: ['ten_khoa'],
-              where: {
-                id: khoaId
-              }
-            }
-          ]
+          where: {
+            id: lopId
+          },
         },
         {
           model: db.Giangvien_phutrach,

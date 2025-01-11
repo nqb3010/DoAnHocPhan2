@@ -4,7 +4,7 @@ const { raw } = require("body-parser");
 const { where } = require("sequelize");
 
 // Function to handle company evaluation
-const danhGiaCongTy = async (input) => {
+const danhGiaCongTy = async (iddotthuctap,input) => {
     const Danhgia = Array.isArray(input) ? input : [input];
 
     if (!Danhgia.length) {
@@ -45,13 +45,22 @@ const danhGiaCongTy = async (input) => {
         }
 
         const giangvienPhutrach = await db.Giangvien_phutrach.findOne({
-            where: { id_sinhvien: sinhvien.id }
+            where: { id_sinhvien: sinhvien.id },
+            include: {
+                model: db.Thuc_tap,
+                as: 'thuc_tap',
+                where: {
+                    id_dotthuctap: iddotthuctap
+                }
+            },
+            raw: true,
+            nest: true
         });
 
         if (!giangvienPhutrach) {
             return {
                 success: false,
-                message: `Sinh viên ${element.Msv} chưa được phân công giảng viên phụ trách`
+                message: `Sinh viên ${element.Msv} không tham gia thực tập trong đợt này`
             };
         }
 
@@ -86,11 +95,6 @@ const danhGiaCongTy = async (input) => {
                 where: { id_giangvien_phutrach: giangvienPhutrach.id }
             });
 
-            await db.Thuc_tap.update({
-                trang_thai: "Đã hoàn thành"
-            }, {
-                where: { id_sinhvien: sinhvien.id }
-            });
         }
 
         return {
@@ -126,7 +130,7 @@ const danhGiaCongTy = async (input) => {
 };
 
 // Function to handle lecturer evaluation
-const danhGiaGiangVien = async (input) => {
+const danhGiaGiangVien = async (iddotthuctap,input) => {
     const Danhgia = Array.isArray(input) ? input : [input];
 
     if (!Danhgia.length) {
@@ -167,7 +171,16 @@ const danhGiaGiangVien = async (input) => {
         }
 
         const giangvienPhutrach = await db.Giangvien_phutrach.findOne({
-            where: { id_sinhvien: sinhvien.id }
+            where: { id_sinhvien: sinhvien.id },
+            include: {
+                model: db.Thuc_tap,
+                as: 'thuc_tap',
+                where: {
+                    id_dotthuctap: iddotthuctap
+                }
+            },
+            raw: true,
+            nest: true
         });
 
         if (!giangvienPhutrach) {

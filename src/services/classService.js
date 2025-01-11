@@ -88,6 +88,22 @@ const getLecturersbyFaculty = async (faculty) => {
         }
     })
 }
+
+const getClassbyFacultyandCourses = async (faculty, courses) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            const classes = await db.Lop_hoc.findAll({
+                where: { id_khoa: faculty, id_khoahoc: courses },
+                attributes: ['id', 'ten_lop'],
+                raw: true,
+                nest: true,
+            });
+            resolve(classes);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 module.exports = {
     getAllClasses,
     getAllFaculties,
@@ -95,4 +111,5 @@ module.exports = {
     getCompany,
     getInternship,
     getLecturersbyFaculty,
+    getClassbyFacultyandCourses
 };

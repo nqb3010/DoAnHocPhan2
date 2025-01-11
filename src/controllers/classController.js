@@ -53,11 +53,22 @@ const handlegetLecturersbyFaculty = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 }
+
+const handlegetClassbyFacultyandCourses = async (req, res) => {
+    try {
+        const {faculty, courses} = req.query;
+        const classes = await classService.getClassbyFacultyandCourses(faculty, courses);
+        res.status(200).json(classes);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
 module.exports = {
     handlegetAllClasses,
     handlegetAllFaculties,
     handlegetCourses,
     handlegetCompany,
     handlegetInternship,
-    handlegetLecturersbyFaculty
+    handlegetLecturersbyFaculty,
+    handlegetClassbyFacultyandCourses
 };

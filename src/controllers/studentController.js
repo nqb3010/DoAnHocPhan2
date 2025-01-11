@@ -57,8 +57,8 @@ const handleFilterStudents = async (req, res) => {
 
 const handleGetStudentsWithoutInternship = async (req, res) => {
     try {
-        const {khoaId, dotThuctapId} = req.body;
-        const students = await studentService.getStudentsWithoutInternship(khoaId, dotThuctapId);
+        const {lopId, dotThuctapId} = req.body;
+        const students = await studentService.getStudentsWithoutInternship(lopId, dotThuctapId);
         res.json(students);
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -3,7 +3,8 @@ const danh_giaService = require('../services/danh_giaService');
 const danh_giaSinhVien = async (req, res) => {
     try {
         const Danhgia = req.body;
-        const result = await danh_giaService.danhGiaGiangVien(Danhgia);
+        const dotthuctap = req.query.dotthuctap;
+        const result = await danh_giaService.danhGiaGiangVien(dotthuctap,Danhgia);
         res.json(result);
     } catch (error) {
         res.status(500).send(error.message);
@@ -12,7 +13,8 @@ const danh_giaSinhVien = async (req, res) => {
 const danhgiacongty = async (req, res) => {
     try {
         const Danhgia = req.body;
-        const result = await danh_giaService.danhGiaCongTy(Danhgia);
+        const dotthuctap = req.query.dotthuctap;
+        const result = await danh_giaService.danhGiaCongTy(dotthuctap,Danhgia);
         res.json(result);
     } catch (error) {
         res.status(500).send(error.message);
