@@ -50,7 +50,7 @@ const initRoutes = (app) => {
     app.get("/api/faculties",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetAllFaculties); 
     app.get("/api/courses",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetCourses);
     app.get("/api/companies",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetCompany);
-    app.get("/api/internships",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetInternship);
+    app.get("/api/internships",middlewareController.verifyToken,middlewareController.verifyAll, classController.handlegetInternship);
     app.get("/api/lecturers/:faculty",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetLecturersbyFaculty);
     app.post("/api/getStudentsWithoutInternship",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, studentController.handleGetStudentsWithoutInternship);
     app.get("/api/getClassbyfacultyandcourses",middlewareController.verifyToken,middlewareController.verifyLecturerOrAdmin, classController.handlegetClassbyFacultyandCourses);
