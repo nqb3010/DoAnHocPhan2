@@ -35,7 +35,7 @@ const getDanhGia = async (req, res) => {
 const getdanhgiacuacongty = async (req, res) => {
     try {
         const {idcongty, iddotthuctap} = req.query;
-        const result = await danh_giaService.getdanhgiacuacongty(idcongty, iddotthuctap, req.body);
+        const result = await danh_giaService.getdanhgiacuacongty(idcongty, iddotthuctap);
         res.json(result);
     } catch (error) {
         res.status(500).send(error.message);

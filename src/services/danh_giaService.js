@@ -321,10 +321,10 @@ const getDanhGia = async (Gv,id_dtt) => {
     })
 }
 
-const getdanhgiacuacongty = async (idcongty,iddotthuctap,diem) => {
+const getdanhgiacuacongty = async (idcongty,iddotthuctap) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if(!idcongty || !iddotthuctap || !diem) {
+            if(!idcongty || !iddotthuctap) {
                 resolve({
                     status: 400,
                     message: "Vui lòng nhập đầy đủ thông tin"
