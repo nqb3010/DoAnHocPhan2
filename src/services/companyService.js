@@ -109,7 +109,7 @@ const deleteCompany = async (id) => {
             },
         });
         if (checkCompany) {
-            checkPhanCong = await db.Phan_cong_giangvien.findOne({
+            checkPhanCong = await db.Thuc_tap.findOne({
             where: {
                 id_congty: id,
             },
